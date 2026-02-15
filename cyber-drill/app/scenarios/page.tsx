@@ -11,6 +11,12 @@ const difficultyColor: Record<Scenario["difficulty"], string> = {
   hard: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
 };
 
+function formatTime(seconds: number): string {
+  if (seconds < 60) return `${seconds}s`;
+  const minutes = Math.floor(seconds / 60);
+  return `${minutes} min`;
+}
+
 export default async function ScenariosPage() {
   const supabase = await createClient();
   const {
@@ -82,7 +88,7 @@ export default async function ScenariosPage() {
                     {scenario.difficulty}
                   </span>
                   <span className="text-xs text-zinc-400 dark:text-zinc-500">
-                    {scenario.category}
+                    {scenario.scenario_type}
                   </span>
                 </div>
                 <h2 className="mb-1 font-medium text-zinc-900 group-hover:text-zinc-700 dark:text-zinc-50 dark:group-hover:text-zinc-200">
@@ -91,8 +97,9 @@ export default async function ScenariosPage() {
                 <p className="text-sm text-zinc-500 line-clamp-2 dark:text-zinc-400">
                   {scenario.description}
                 </p>
-                <div className="mt-3 text-xs text-zinc-400 dark:text-zinc-500">
-                  {scenario.estimated_duration} min
+                <div className="mt-3 flex items-center gap-3 text-xs text-zinc-400 dark:text-zinc-500">
+                  <span>{scenario.points} pts</span>
+                  <span>{formatTime(scenario.time_limit_seconds)}</span>
                 </div>
               </Link>
             ))}

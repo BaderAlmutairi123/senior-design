@@ -10,6 +10,12 @@ const difficultyColor = {
   hard: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
 } as const;
 
+function formatTime(seconds: number): string {
+  if (seconds < 60) return `${seconds}s`;
+  const minutes = Math.floor(seconds / 60);
+  return `${minutes} min`;
+}
+
 export default async function ScenarioViewerPage({
   params,
 }: {
@@ -30,6 +36,8 @@ export default async function ScenarioViewerPage({
   if (!scenario) {
     notFound();
   }
+
+  const content = scenario.content as Record<string, unknown>;
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-black">
@@ -77,10 +85,13 @@ export default async function ScenarioViewerPage({
               {scenario.difficulty}
             </span>
             <span className="text-sm text-zinc-400 dark:text-zinc-500">
-              {scenario.category}
+              {scenario.scenario_type}
             </span>
             <span className="text-sm text-zinc-400 dark:text-zinc-500">
-              {scenario.estimated_duration} min
+              {formatTime(scenario.time_limit_seconds)}
+            </span>
+            <span className="text-sm text-zinc-400 dark:text-zinc-500">
+              {scenario.points} pts
             </span>
           </div>
           <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
@@ -91,35 +102,72 @@ export default async function ScenarioViewerPage({
           </p>
         </div>
 
-        {/* Objectives */}
-        {scenario.objectives && scenario.objectives.length > 0 && (
-          <section className="mb-8 rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950">
-            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-              Learning Objectives
-            </h2>
-            <ul className="space-y-2">
-              {scenario.objectives.map((objective, index) => (
-                <li
-                  key={index}
-                  className="flex items-start gap-2 text-sm text-zinc-700 dark:text-zinc-300"
-                >
-                  <span className="mt-0.5 text-zinc-400 dark:text-zinc-500">
-                    {index + 1}.
-                  </span>
-                  {objective}
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-
         {/* Scenario content */}
-        <section className="rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950">
+        <section className="mb-8 rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950">
           <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
             Scenario Details
           </h2>
-          <div className="prose prose-zinc max-w-none text-sm leading-relaxed text-zinc-700 whitespace-pre-wrap dark:text-zinc-300">
-            {scenario.content}
+          <div className="space-y-4 text-sm text-zinc-700 dark:text-zinc-300">
+            {content.instructions && (
+              <div>
+                <h3 className="mb-1 font-medium text-zinc-900 dark:text-zinc-100">
+                  Instructions
+                </h3>
+                <p className="whitespace-pre-wrap">
+                  {String(content.instructions)}
+                </p>
+              </div>
+            )}
+            {content.background && (
+              <div>
+                <h3 className="mb-1 font-medium text-zinc-900 dark:text-zinc-100">
+                  Background
+                </h3>
+                <p className="whitespace-pre-wrap">
+                  {String(content.background)}
+                </p>
+              </div>
+            )}
+            {content.questions && Array.isArray(content.questions) && (
+              <div>
+                <h3 className="mb-2 font-medium text-zinc-900 dark:text-zinc-100">
+                  Questions
+                </h3>
+                <ol className="list-decimal space-y-3 pl-5">
+                  {content.questions.map(
+                    (q: Record<string, unknown>, index: number) => (
+                      <li key={index}>
+                        <p className="font-medium">
+                          {String(q.question || q.text || "")}
+                        </p>
+                        {q.options && Array.isArray(q.options) && (
+                          <ul className="mt-1 space-y-1 pl-4">
+                            {q.options.map(
+                              (opt: unknown, optIndex: number) => (
+                                <li
+                                  key={optIndex}
+                                  className="text-zinc-600 dark:text-zinc-400"
+                                >
+                                  {String(opt)}
+                                </li>
+                              )
+                            )}
+                          </ul>
+                        )}
+                      </li>
+                    )
+                  )}
+                </ol>
+              </div>
+            )}
+            {/* Fallback: render raw JSON if no known keys */}
+            {!content.instructions &&
+              !content.background &&
+              !content.questions && (
+                <pre className="overflow-x-auto whitespace-pre-wrap rounded bg-zinc-100 p-4 text-xs dark:bg-zinc-900">
+                  {JSON.stringify(content, null, 2)}
+                </pre>
+              )}
           </div>
         </section>
       </main>

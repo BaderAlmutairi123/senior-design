@@ -6,6 +6,7 @@ export async function getScenarios(): Promise<Scenario[]> {
   const { data, error } = await supabase
     .from("scenarios")
     .select("*")
+    .eq("is_active", true)
     .order("created_at", { ascending: false });
 
   if (error) {
