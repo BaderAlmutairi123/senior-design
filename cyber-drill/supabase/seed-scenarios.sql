@@ -4,7 +4,7 @@
 INSERT INTO scenarios (course_id, title, description, scenario_type, difficulty, content, correct_answers, points, time_limit_seconds, is_active)
 VALUES
 (
-  'general',
+  gen_random_uuid(),
   'Phishing Email Detection',
   'Analyze a set of emails and identify which ones are phishing attempts. Learn to spot suspicious senders, urgent language, and malicious links.',
   'quiz',
@@ -33,7 +33,7 @@ VALUES
   true
 ),
 (
-  'general',
+  gen_random_uuid(),
   'Network Traffic Analysis',
   'Examine network packet captures to identify suspicious traffic patterns, potential intrusions, and data exfiltration attempts.',
   'analysis',
@@ -62,7 +62,7 @@ VALUES
   true
 ),
 (
-  'general',
+  gen_random_uuid(),
   'SQL Injection Fundamentals',
   'Learn to identify and exploit SQL injection vulnerabilities in web applications, and understand how to defend against them.',
   'hands-on',
@@ -91,7 +91,7 @@ VALUES
   true
 ),
 (
-  'general',
+  gen_random_uuid(),
   'Incident Response Simulation',
   'Walk through a simulated security incident from detection to containment. Practice the incident response lifecycle on a ransomware attack.',
   'simulation',
@@ -124,7 +124,7 @@ VALUES
   true
 ),
 (
-  'general',
+  gen_random_uuid(),
   'Password Cracking & Hash Analysis',
   'Understand common password hashing algorithms, identify weak hashes, and learn why proper hashing and salting are essential for security.',
   'quiz',
