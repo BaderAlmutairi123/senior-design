@@ -3,11 +3,10 @@ import { redirect, notFound } from "next/navigation";
 import { getScenarioById } from "@/lib/scenarios/queries";
 import Link from "next/link";
 
-const difficultyColor = {
-  easy: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
-  medium:
-    "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
-  hard: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
+const difficultyConfig = {
+  easy: { color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/20" },
+  medium: { color: "text-amber-400", bg: "bg-amber-500/10 border-amber-500/20" },
+  hard: { color: "text-red-400", bg: "bg-red-500/10 border-red-500/20" },
 } as const;
 
 function formatTime(seconds: number): string {
@@ -38,26 +37,38 @@ export default async function ScenarioViewerPage({
   }
 
   const content = scenario.content as Record<string, unknown>;
+  const diff = difficultyConfig[scenario.difficulty];
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-black">
+    <div className="cyber-grid min-h-screen bg-[#0a0a0f]">
+      {/* Decorative glow orbs */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <div className="absolute -left-32 top-0 h-96 w-96 rounded-full bg-cyan-500/5 blur-3xl" />
+        <div className="absolute -right-32 bottom-0 h-96 w-96 rounded-full bg-violet-500/5 blur-3xl" />
+      </div>
+
       {/* Header */}
-      <header className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-          <Link
-            href="/"
-            className="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-50"
-          >
-            CyberDrill
-          </Link>
+      <header className="relative z-10 border-b border-zinc-800/50">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+          <div className="flex items-center gap-3">
+            <Link href="/" className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-cyan-500/10 ring-1 ring-cyan-500/20">
+                <svg className="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+                </svg>
+              </div>
+              <span className="gradient-text text-lg font-bold tracking-tight">CyberDrill</span>
+            </Link>
+          </div>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-zinc-500 dark:text-zinc-400">
-              {user.email}
-            </span>
+            <div className="flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/50 px-3 py-1.5">
+              <div className="h-2 w-2 rounded-full bg-emerald-400 pulse-glow" />
+              <span className="text-sm text-zinc-400">{user.email}</span>
+            </div>
             <form action="/auth/signout" method="post">
               <button
                 type="submit"
-                className="rounded-md border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                className="rounded-xl border border-zinc-800 px-4 py-2 text-sm font-medium text-zinc-400 transition-all hover:border-zinc-600 hover:text-zinc-200"
               >
                 Sign out
               </button>
@@ -67,109 +78,149 @@ export default async function ScenarioViewerPage({
       </header>
 
       {/* Main content */}
-      <main className="mx-auto max-w-3xl px-6 py-10">
+      <main className="relative z-10 mx-auto max-w-4xl px-6 py-12">
         {/* Back link */}
         <Link
           href="/scenarios"
-          className="mb-6 inline-flex items-center gap-1 text-sm text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+          className="mb-6 inline-flex items-center gap-1.5 text-sm text-zinc-500 transition-colors hover:text-cyan-400"
         >
-          &larr; Back to scenarios
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+          </svg>
+          Back to Scenarios
         </Link>
 
-        {/* Scenario header */}
-        <div className="mb-8">
-          <div className="mb-3 flex items-center gap-3">
-            <span
-              className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${difficultyColor[scenario.difficulty]}`}
-            >
+        {/* Scenario header card */}
+        <div className="glass mb-8 rounded-2xl p-8">
+          <div className="mb-4 flex flex-wrap items-center gap-3">
+            <span className={`rounded-full border px-3 py-1 text-xs font-medium capitalize ${diff.bg} ${diff.color}`}>
               {scenario.difficulty}
             </span>
-            <span className="text-sm text-zinc-400 dark:text-zinc-500">
+            <span className="rounded-full border border-zinc-800 bg-zinc-800/50 px-3 py-1 text-xs text-zinc-400 capitalize">
               {scenario.scenario_type}
             </span>
-            <span className="text-sm text-zinc-400 dark:text-zinc-500">
+            <div className="flex items-center gap-1 rounded-full border border-zinc-800 bg-zinc-800/50 px-3 py-1 text-xs text-zinc-400">
+              <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
               {formatTime(scenario.time_limit_seconds)}
-            </span>
-            <span className="text-sm text-zinc-400 dark:text-zinc-500">
+            </div>
+            <div className="flex items-center gap-1 rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-xs text-cyan-400">
+              <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
+              </svg>
               {scenario.points} pts
-            </span>
+            </div>
           </div>
-          <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+
+          <h1 className="text-2xl font-bold tracking-tight text-zinc-100">
             {scenario.title}
           </h1>
-          <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+          <p className="mt-3 leading-relaxed text-zinc-400">
             {scenario.description}
           </p>
         </div>
 
-        {/* Scenario content */}
-        <section className="mb-8 rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950">
-          <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-            Scenario Details
-          </h2>
-          <div className="space-y-4 text-sm text-zinc-700 dark:text-zinc-300">
-            {content.instructions && (
-              <div>
-                <h3 className="mb-1 font-medium text-zinc-900 dark:text-zinc-100">
+        {/* Scenario content sections */}
+        <div className="space-y-6">
+          {content.instructions && (
+            <section className="glass rounded-2xl p-6">
+              <div className="mb-4 flex items-center gap-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-cyan-500/10">
+                  <svg className="h-4 w-4 text-cyan-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                  </svg>
+                </div>
+                <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-400">
                   Instructions
-                </h3>
-                <p className="whitespace-pre-wrap">
-                  {String(content.instructions)}
-                </p>
+                </h2>
               </div>
-            )}
-            {content.background && (
-              <div>
-                <h3 className="mb-1 font-medium text-zinc-900 dark:text-zinc-100">
+              <p className="whitespace-pre-wrap leading-relaxed text-zinc-300">
+                {String(content.instructions)}
+              </p>
+            </section>
+          )}
+
+          {content.background && (
+            <section className="glass rounded-2xl p-6">
+              <div className="mb-4 flex items-center gap-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-500/10">
+                  <svg className="h-4 w-4 text-violet-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                  </svg>
+                </div>
+                <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-400">
                   Background
-                </h3>
-                <p className="whitespace-pre-wrap">
-                  {String(content.background)}
-                </p>
+                </h2>
               </div>
-            )}
-            {content.questions && Array.isArray(content.questions) && (
-              <div>
-                <h3 className="mb-2 font-medium text-zinc-900 dark:text-zinc-100">
+              <p className="whitespace-pre-wrap leading-relaxed text-zinc-300">
+                {String(content.background)}
+              </p>
+            </section>
+          )}
+
+          {content.questions && Array.isArray(content.questions) && (
+            <section className="glass rounded-2xl p-6">
+              <div className="mb-6 flex items-center gap-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10">
+                  <svg className="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
+                  </svg>
+                </div>
+                <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-400">
                   Questions
-                </h3>
-                <ol className="list-decimal space-y-3 pl-5">
-                  {content.questions.map(
-                    (q: Record<string, unknown>, index: number) => (
-                      <li key={index}>
-                        <p className="font-medium">
+                </h2>
+              </div>
+              <div className="space-y-6">
+                {content.questions.map(
+                  (q: Record<string, unknown>, index: number) => (
+                    <div
+                      key={index}
+                      className="rounded-xl border border-zinc-800/50 bg-zinc-900/30 p-5"
+                    >
+                      <div className="mb-3 flex items-start gap-3">
+                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-cyan-500/10 text-xs font-bold text-cyan-400">
+                          {index + 1}
+                        </span>
+                        <p className="font-medium leading-relaxed text-zinc-200">
                           {String(q.question || q.text || "")}
                         </p>
-                        {q.options && Array.isArray(q.options) && (
-                          <ul className="mt-1 space-y-1 pl-4">
-                            {q.options.map(
-                              (opt: unknown, optIndex: number) => (
-                                <li
-                                  key={optIndex}
-                                  className="text-zinc-600 dark:text-zinc-400"
-                                >
-                                  {String(opt)}
-                                </li>
-                              )
-                            )}
-                          </ul>
-                        )}
-                      </li>
-                    )
-                  )}
-                </ol>
+                      </div>
+                      {q.options && Array.isArray(q.options) && (
+                        <div className="ml-10 space-y-2">
+                          {q.options.map(
+                            (opt: unknown, optIndex: number) => (
+                              <div
+                                key={optIndex}
+                                className="rounded-lg border border-zinc-800/30 bg-zinc-900/20 px-4 py-2.5 text-sm text-zinc-400 transition-colors hover:border-zinc-700 hover:text-zinc-300"
+                              >
+                                {String(opt)}
+                              </div>
+                            )
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )
+                )}
               </div>
-            )}
-            {/* Fallback: render raw JSON if no known keys */}
-            {!content.instructions &&
-              !content.background &&
-              !content.questions && (
-                <pre className="overflow-x-auto whitespace-pre-wrap rounded bg-zinc-100 p-4 text-xs dark:bg-zinc-900">
+            </section>
+          )}
+
+          {/* Fallback: render raw JSON if no known keys */}
+          {!content.instructions &&
+            !content.background &&
+            !content.questions && (
+              <section className="glass rounded-2xl p-6">
+                <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-zinc-400">
+                  Scenario Data
+                </h2>
+                <pre className="overflow-x-auto whitespace-pre-wrap rounded-xl bg-zinc-900/50 p-4 font-mono text-xs text-zinc-400">
                   {JSON.stringify(content, null, 2)}
                 </pre>
-              )}
-          </div>
-        </section>
+              </section>
+            )}
+        </div>
       </main>
     </div>
   );
