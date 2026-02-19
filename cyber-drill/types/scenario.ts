@@ -4,7 +4,7 @@ export interface Scenario {
   title: string;
   description: string;
   scenario_type: string;
-  difficulty: "easy" | "medium" | "hard";
+  difficulty: "beginner" | "intermediate" | "advanced";
   content: Record<string, unknown>;
   correct_answers: Record<string, unknown>;
   points: number;

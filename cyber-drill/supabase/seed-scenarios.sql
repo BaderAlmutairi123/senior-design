@@ -8,7 +8,7 @@ VALUES
   'Phishing Email Detection',
   'Analyze a set of emails and identify which ones are phishing attempts. Learn to spot suspicious senders, urgent language, and malicious links.',
   'quiz',
-  'easy',
+  'beginner',
   '{
     "instructions": "You are a security analyst reviewing flagged emails. Examine each email carefully and determine whether it is legitimate or a phishing attempt.",
     "background": "Phishing is one of the most common attack vectors used by cybercriminals. Over 90% of data breaches start with a phishing email. Being able to identify phishing attempts is a critical skill for every cybersecurity professional.",
@@ -37,7 +37,7 @@ VALUES
   'Network Traffic Analysis',
   'Examine network packet captures to identify suspicious traffic patterns, potential intrusions, and data exfiltration attempts.',
   'analysis',
-  'medium',
+  'intermediate',
   '{
     "instructions": "You are monitoring network traffic for a corporate environment. Analyze the following traffic logs and identify any malicious activity.",
     "background": "Network traffic analysis is a fundamental skill in cybersecurity. By examining packet captures and flow data, analysts can detect intrusions, malware communication, and data exfiltration. Understanding normal vs. abnormal traffic patterns is essential for threat detection.",
@@ -66,7 +66,7 @@ VALUES
   'SQL Injection Fundamentals',
   'Learn to identify and exploit SQL injection vulnerabilities in web applications, and understand how to defend against them.',
   'hands-on',
-  'medium',
+  'intermediate',
   '{
     "instructions": "You are performing a security assessment on a web application. The application has a login form and a search feature. Identify SQL injection vulnerabilities and determine how to mitigate them.",
     "background": "SQL Injection (SQLi) is a code injection technique that exploits vulnerabilities in an application''s database layer. It consistently ranks in the OWASP Top 10 and can lead to unauthorized data access, data modification, or even complete system compromise.",
@@ -95,7 +95,7 @@ VALUES
   'Incident Response Simulation',
   'Walk through a simulated security incident from detection to containment. Practice the incident response lifecycle on a ransomware attack.',
   'simulation',
-  'hard',
+  'advanced',
   '{
     "instructions": "Your organization has been hit by a ransomware attack. Multiple endpoints are encrypted and a ransom note has appeared. Walk through each phase of the incident response process.",
     "background": "Incident Response (IR) is the organized approach to addressing and managing a security breach or cyberattack. The NIST framework defines four phases: Preparation, Detection & Analysis, Containment/Eradication/Recovery, and Post-Incident Activity. Ransomware attacks have increased by over 150% in recent years.",
@@ -128,7 +128,7 @@ VALUES
   'Password Cracking & Hash Analysis',
   'Understand common password hashing algorithms, identify weak hashes, and learn why proper hashing and salting are essential for security.',
   'quiz',
-  'easy',
+  'beginner',
   '{
     "instructions": "You have been given a set of password hashes recovered during a security audit. Analyze the hashes and answer questions about password security best practices.",
     "background": "Password hashing is a critical security mechanism that converts plaintext passwords into fixed-length strings. Common algorithms include MD5, SHA-1, SHA-256, and bcrypt. Understanding the strengths and weaknesses of each algorithm is essential for implementing secure authentication systems.",

@@ -4,9 +4,9 @@ import { getScenarioById } from "@/lib/scenarios/queries";
 import Link from "next/link";
 
 const difficultyConfig = {
-  easy: { color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/20" },
-  medium: { color: "text-amber-400", bg: "bg-amber-500/10 border-amber-500/20" },
-  hard: { color: "text-red-400", bg: "bg-red-500/10 border-red-500/20" },
+  beginner: { color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/20" },
+  intermediate: { color: "text-amber-400", bg: "bg-amber-500/10 border-amber-500/20" },
+  advanced: { color: "text-red-400", bg: "bg-red-500/10 border-red-500/20" },
 } as const;
 
 function formatTime(seconds: number): string {
