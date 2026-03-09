@@ -1,7 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect, notFound } from "next/navigation";
-import { getScenarioById } from "@/lib/scenarios/queries";
+import { getScenarioById, getUserProgress } from "@/lib/scenarios/queries";
 import Link from "next/link";
+import QuizClient from "./QuizClient";
+import type { QuizQuestion } from "@/types/scenario";
 
 const difficultyConfig = {
   beginner: { color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/20" },
@@ -36,8 +38,19 @@ export default async function ScenarioViewerPage({
     notFound();
   }
 
-  const content = scenario.content as Record<string, unknown>;
+  const content = scenario.content as {
+    instructions?: string;
+    background?: string;
+    questions?: QuizQuestion[];
+  };
   const diff = difficultyConfig[scenario.difficulty];
+  const questions = (content.questions as QuizQuestion[]) || [];
+  const correctAnswersData = (
+    scenario.correct_answers as { answers: string[] }
+  )?.answers || [];
+
+  // Fetch existing progress for this user + scenario
+  const existingProgress = await getUserProgress(user.id, scenario.id);
 
   return (
     <div className="cyber-grid min-h-screen bg-[#0a0a0f]">
@@ -136,7 +149,7 @@ export default async function ScenarioViewerPage({
                 </h2>
               </div>
               <p className="whitespace-pre-wrap leading-relaxed text-zinc-300">
-                {String(content.instructions)}
+                {content.instructions}
               </p>
             </section>
           )}
@@ -154,57 +167,20 @@ export default async function ScenarioViewerPage({
                 </h2>
               </div>
               <p className="whitespace-pre-wrap leading-relaxed text-zinc-300">
-                {String(content.background)}
+                {content.background}
               </p>
             </section>
           )}
 
-          {content.questions && Array.isArray(content.questions) && (
-            <section className="glass rounded-2xl p-6">
-              <div className="mb-6 flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10">
-                  <svg className="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
-                  </svg>
-                </div>
-                <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-400">
-                  Questions
-                </h2>
-              </div>
-              <div className="space-y-6">
-                {content.questions.map(
-                  (q: Record<string, unknown>, index: number) => (
-                    <div
-                      key={index}
-                      className="rounded-xl border border-zinc-800/50 bg-zinc-900/30 p-5"
-                    >
-                      <div className="mb-3 flex items-start gap-3">
-                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-cyan-500/10 text-xs font-bold text-cyan-400">
-                          {index + 1}
-                        </span>
-                        <p className="font-medium leading-relaxed text-zinc-200">
-                          {String(q.question || q.text || "")}
-                        </p>
-                      </div>
-                      {q.options && Array.isArray(q.options) && (
-                        <div className="ml-10 space-y-2">
-                          {q.options.map(
-                            (opt: unknown, optIndex: number) => (
-                              <div
-                                key={optIndex}
-                                className="rounded-lg border border-zinc-800/30 bg-zinc-900/20 px-4 py-2.5 text-sm text-zinc-400 transition-colors hover:border-zinc-700 hover:text-zinc-300"
-                              >
-                                {String(opt)}
-                              </div>
-                            )
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  )
-                )}
-              </div>
-            </section>
+          {/* Interactive Quiz */}
+          {questions.length > 0 && (
+            <QuizClient
+              scenarioId={scenario.id}
+              questions={questions}
+              maxPoints={scenario.points}
+              existingProgress={existingProgress}
+              correctAnswersData={correctAnswersData}
+            />
           )}
 
           {/* Fallback: render raw JSON if no known keys */}
