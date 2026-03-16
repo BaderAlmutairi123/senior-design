@@ -35,6 +35,7 @@ export interface ScenarioContent {
   instructions?: string;
   background?: string;
   questions?: QuizQuestion[];
+  explanations?: string[];
 }
 
 export interface GradeResult {

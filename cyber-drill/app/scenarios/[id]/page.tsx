@@ -42,6 +42,7 @@ export default async function ScenarioViewerPage({
     instructions?: string;
     background?: string;
     questions?: QuizQuestion[];
+    explanations?: string[];
   };
   const diff = difficultyConfig[scenario.difficulty];
   const questions = (content.questions as QuizQuestion[]) || [];
@@ -180,6 +181,7 @@ export default async function ScenarioViewerPage({
               maxPoints={scenario.points}
               existingProgress={existingProgress}
               correctAnswersData={correctAnswersData}
+              explanations={content.explanations}
             />
           )}
 
