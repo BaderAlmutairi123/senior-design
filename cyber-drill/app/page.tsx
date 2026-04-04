@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { getUserStats } from "@/lib/scenarios/queries";
 import Link from "next/link";
 
 export default async function Home() {
@@ -12,6 +13,8 @@ export default async function Home() {
     redirect("/login");
   }
 
+  const { totalScenarios, completed, totalPoints } = await getUserStats(user.id);
+
   const cards = [
     {
       href: "/scenarios",
@@ -22,7 +25,7 @@ export default async function Home() {
       ),
       title: "Scenarios",
       desc: "Browse and start cybersecurity training drills.",
-      stat: "5 available",
+      stat: `${totalScenarios} available`,
     },
     {
       href: "/feedback/submit",
@@ -36,15 +39,15 @@ export default async function Home() {
       stat: "New",
     },
     {
-      href: "/scenarios",
+      href: "/progress",
       icon: (
         <svg className="h-6 w-6 text-emerald-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" />
         </svg>
       ),
       title: "Progress",
-      desc: "Track your training and certifications.",
-      stat: "Coming soon",
+      desc: "Track your training progress and performance.",
+      stat: `${stats.completed} done`,
     },
   ];
 
@@ -100,15 +103,15 @@ export default async function Home() {
         <div className="mb-10 grid grid-cols-3 gap-4">
           <div className="glass rounded-2xl p-5">
             <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">Scenarios</p>
-            <p className="mt-1 text-2xl font-bold text-cyan-400">5</p>
+            <p className="mt-1 text-2xl font-bold text-cyan-400">{totalScenarios}</p>
           </div>
           <div className="glass rounded-2xl p-5">
             <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">Completed</p>
-            <p className="mt-1 text-2xl font-bold text-emerald-400">0</p>
+            <p className="mt-1 text-2xl font-bold text-emerald-400">{completed}</p>
           </div>
           <div className="glass rounded-2xl p-5">
             <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">Total Points</p>
-            <p className="mt-1 text-2xl font-bold text-violet-400">0</p>
+            <p className="mt-1 text-2xl font-bold text-violet-400">{totalPoints}</p>
           </div>
         </div>
 
