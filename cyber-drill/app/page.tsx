@@ -47,7 +47,7 @@ export default async function Home() {
       ),
       title: "Progress",
       desc: "Track your training progress and performance.",
-      stat: `${stats.completed} done`,
+      stat: `${completed} done`,
     },
   ];
 
