@@ -159,10 +159,10 @@ export default async function ProgressPage() {
       {/* Page Header */}
       <div className="mb-8">
         <h1 className="font-headline font-bold text-4xl tracking-tighter text-[var(--so-on-surface)]">
-          OPERATOR SKILL ARCHITECTURE
+          Your Progress
         </h1>
-        <p className="mt-2 font-mono text-sm text-[var(--so-on-surface-variant)]">
-          Sovereign Asset: {user.email} // Completion: {overallPercent}%
+        <p className="mt-2 text-sm text-[var(--so-on-surface-variant)]">
+          {user.email} &mdash; {overallPercent}% complete
         </p>
       </div>
 

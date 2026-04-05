@@ -22,11 +22,11 @@ export default async function FeedbackSubmitPage() {
       {/* Page Header */}
       <div className="mb-10">
         <h1 className="font-headline font-bold text-4xl tracking-tighter text-[#f6f6fc]">
-          OPERATOR_FEEDBACK
+          Share Feedback
         </h1>
-        <p className="mt-2 font-mono text-sm text-[#aaabb0] flex items-center gap-2">
+        <p className="mt-2 text-sm text-[#aaabb0] flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-[#d873ff] block"></span>
-          SYSTEM_STATUS: FEEDBACK_COLLECTION // UID: {user.email}
+          Help us improve CyberDrill &mdash; {user.email}
         </p>
       </div>
 

@@ -64,10 +64,10 @@ export default async function ScenariosPage() {
       <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="font-headline text-4xl font-bold tracking-tighter text-[#f6f6fc]">
-            DRILL_SCENARIOS
+            Drill Scenarios
           </h1>
-          <p className="mt-1 font-mono text-[10px] uppercase tracking-widest text-[#aaabb0]">
-            AVAILABLE_MISSIONS: {scenarios.length} // STATUS: ONLINE
+          <p className="mt-1 text-sm text-[#aaabb0]">
+            {scenarios.length} scenarios available
           </p>
         </div>
 
@@ -95,7 +95,7 @@ export default async function ScenariosPage() {
             folder_off
           </span>
           <p className="font-headline text-lg font-bold text-[#f6f6fc]">
-            NO SCENARIOS FOUND
+            No Scenarios Found
           </p>
           <p className="mt-1 font-mono text-[10px] uppercase tracking-widest text-[#aaabb0]">
             Check back later for new training drills

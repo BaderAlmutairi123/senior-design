@@ -7,9 +7,9 @@ import AppShell from "@/components/layout/AppShell";
 import type { QuizQuestion } from "@/types/scenario";
 
 const difficultyConfig = {
-  beginner: { color: "text-[#a2f31f]", border: "border-[#a2f31f]", bg: "bg-[#a2f31f]/10", label: "TIER_I" },
-  intermediate: { color: "text-[#8ff5ff]", border: "border-[#8ff5ff]", bg: "bg-[#8ff5ff]/10", label: "TIER_II" },
-  advanced: { color: "text-[#d873ff]", border: "border-[#d873ff]", bg: "bg-[#d873ff]/10", label: "TIER_III" },
+  beginner: { color: "text-[#a2f31f]", border: "border-[#a2f31f]", bg: "bg-[#a2f31f]/10", label: "Beginner" },
+  intermediate: { color: "text-[#8ff5ff]", border: "border-[#8ff5ff]", bg: "bg-[#8ff5ff]/10", label: "Intermediate" },
+  advanced: { color: "text-[#d873ff]", border: "border-[#d873ff]", bg: "bg-[#d873ff]/10", label: "Advanced" },
 } as const;
 
 const typeIcons: Record<string, string> = {
@@ -71,20 +71,20 @@ export default async function ScenarioViewerPage({
             className="inline-flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-[#aaabb0] hover:text-[#8ff5ff] transition-colors mb-4"
           >
             <span className="material-symbols-outlined text-sm">arrow_back</span>
-            RETURN_TO_DRILLS
+            Back to Drills
           </Link>
-          <h1 className="text-3xl font-headline font-bold tracking-tighter text-[#f6f6fc] uppercase flex items-center gap-4">
-            <span className="text-[#8ff5ff]">/</span> {scenario.title.toUpperCase().replace(/[:\s]+/g, '_')}
+          <h1 className="text-3xl font-headline font-bold tracking-tighter text-[#f6f6fc]">
+            {scenario.title}
           </h1>
-          <div className="flex items-center gap-4 font-mono text-xs text-[#aaabb0]">
+          <div className="flex items-center gap-4 text-xs text-[#aaabb0]">
             <span className="flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-[#a2f31f] animate-pulse"></span>
-              SYSTEM: ONLINE
+              Active
             </span>
             <span className="text-[#46484d]">|</span>
-            <span className={diff.color}>{diff.label}</span>
+            <span className={diff.color}>{scenario.difficulty}</span>
             <span className="text-[#46484d]">|</span>
-            <span>{scenario.points} PTS</span>
+            <span>{scenario.points} pts</span>
           </div>
         </div>
 
@@ -118,7 +118,7 @@ export default async function ScenarioViewerPage({
                 <div className="w-3 h-3 rounded-full bg-[#d873ff]/20 border border-[#d873ff]/40"></div>
                 <div className="w-3 h-3 rounded-full bg-[#a2f31f]/20 border border-[#a2f31f]/40"></div>
               </div>
-              <span className="font-mono text-[10px] tracking-widest text-[#aaabb0]">DRILL_TERMINAL_V4.0</span>
+              <span className="font-mono text-[10px] tracking-widest text-[#aaabb0]">Terminal</span>
               <div className="w-12"></div>
             </div>
 

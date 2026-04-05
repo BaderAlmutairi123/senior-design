@@ -6,9 +6,9 @@ import AppShell from "@/components/layout/AppShell";
 import type { QuizQuestion } from "@/types/scenario";
 
 const difficultyConfig = {
-  beginner: { color: "text-[#a2f31f]", border: "border-[#a2f31f]", bg: "bg-[#a2f31f]/10", label: "TIER_I" },
-  intermediate: { color: "text-[#8ff5ff]", border: "border-[#8ff5ff]", bg: "bg-[#8ff5ff]/10", label: "TIER_II" },
-  advanced: { color: "text-[#d873ff]", border: "border-[#d873ff]", bg: "bg-[#d873ff]/10", label: "TIER_III" },
+  beginner: { color: "text-[#a2f31f]", border: "border-[#a2f31f]", bg: "bg-[#a2f31f]/10", label: "Beginner" },
+  intermediate: { color: "text-[#8ff5ff]", border: "border-[#8ff5ff]", bg: "bg-[#8ff5ff]/10", label: "Intermediate" },
+  advanced: { color: "text-[#d873ff]", border: "border-[#d873ff]", bg: "bg-[#d873ff]/10", label: "Advanced" },
 } as const;
 
 export default async function FeedbackPage({
@@ -70,13 +70,13 @@ export default async function FeedbackPage({
           className="inline-flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-[#aaabb0] hover:text-[#8ff5ff] transition-colors mb-4"
         >
           <span className="material-symbols-outlined text-sm">arrow_back</span>
-          RETURN_TO_DRILLS
+          Back to Drills
         </Link>
         <h1 className="font-headline font-bold text-3xl tracking-tighter text-[#f6f6fc]">
-          AFTER_ACTION_REPORT
+          After Action Report
         </h1>
-        <p className="mt-2 font-mono text-sm text-[#aaabb0]">
-          Scenario: {scenario.title} // Completed: {new Date(progress.completed_at).toLocaleDateString("en-US", {
+        <p className="mt-2 text-sm text-[#aaabb0]">
+          {scenario.title} &mdash; Completed {new Date(progress.completed_at).toLocaleDateString("en-US", {
             year: "numeric", month: "short", day: "numeric"
           })}
         </p>

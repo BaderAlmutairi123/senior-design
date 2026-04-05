@@ -60,9 +60,9 @@ export default function FeedbackForm({ scenarios }: FeedbackFormProps) {
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center bg-[#a2f31f]/10 border border-[#a2f31f]/30">
           <span className="material-symbols-outlined text-[#a2f31f] text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
         </div>
-        <h2 className="text-xl font-headline font-bold text-[#f6f6fc]">Transmission Received</h2>
+        <h2 className="text-xl font-headline font-bold text-[#f6f6fc]">Thank You!</h2>
         <p className="mt-2 text-[#aaabb0] text-sm">
-          Your feedback has been logged to the system. Thank you for contributing to the improvement of CyberDrill.
+          Your feedback has been submitted. Thank you for helping us improve CyberDrill.
         </p>
         <button
           type="button"
@@ -86,7 +86,7 @@ export default function FeedbackForm({ scenarios }: FeedbackFormProps) {
       {/* Rating */}
       <div className="p-6 border-b border-[#23262c]">
         <label className="block text-[10px] font-mono uppercase tracking-widest text-[#8ff5ff] mb-4">
-          Operator Rating
+          Rating
         </label>
         <div className="flex gap-3">
           {[1, 2, 3, 4, 5].map((star) => (
