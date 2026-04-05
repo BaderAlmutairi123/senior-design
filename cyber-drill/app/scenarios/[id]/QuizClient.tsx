@@ -21,14 +21,11 @@ export default function QuizClient({
   correctAnswersData,
   explanations = [],
 }: QuizClientProps) {
-  const [selectedAnswers, setSelectedAnswers] = useState<
-    Record<number, string>
-  >({});
+  const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
   const [gradeResult, setGradeResult] = useState<GradeResult | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // If user already completed this scenario, show previous results
   const showingPrevious = existingProgress && !gradeResult;
   const results = gradeResult
     ? gradeResult
@@ -42,10 +39,8 @@ export default function QuizClient({
     if (!allAnswered) return;
     setSubmitting(true);
     setError(null);
-
     const answersArray = questions.map((_, i) => selectedAnswers[i] || "");
     const result = await submitAnswers(scenarioId, answersArray);
-
     if (!result.success) {
       setError(result.error || "Something went wrong.");
     } else if (result.gradeResult) {
@@ -55,11 +50,8 @@ export default function QuizClient({
   }
 
   function selectAnswer(questionIndex: number, optionLetter: string) {
-    if (results) return; // Don't allow changes after submission
-    setSelectedAnswers((prev) => ({
-      ...prev,
-      [questionIndex]: optionLetter,
-    }));
+    if (results) return;
+    setSelectedAnswers((prev) => ({ ...prev, [questionIndex]: optionLetter }));
   }
 
   function extractLetter(option: string): string {
@@ -68,61 +60,52 @@ export default function QuizClient({
   }
 
   return (
-    <section className="glass rounded-2xl p-6">
-      <div className="mb-6 flex items-center gap-2">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10">
-          <svg
-            className="h-4 w-4 text-emerald-400"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z"
-            />
-          </svg>
+    <div className="bg-[#111318] border border-[#23262c] overflow-hidden">
+      {/* Header */}
+      <div className="p-6 border-b border-[#23262c] flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <span className="material-symbols-outlined text-[#d873ff]" style={{ fontVariationSettings: "'FILL' 1" }}>quiz</span>
+          <h2 className="font-headline font-bold text-sm uppercase tracking-widest text-[#f6f6fc]">
+            Response Matrix
+          </h2>
         </div>
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-400">
-          Questions
-        </h2>
         {showingPrevious && (
-          <span className="ml-auto rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-400">
-            Previously completed
+          <span className="text-[9px] px-2 py-1 border border-[#a2f31f]/30 text-[#a2f31f] bg-[#a2f31f]/5 uppercase font-mono">
+            Previously Completed
           </span>
         )}
       </div>
 
       {/* Score banner */}
       {results && (
-        <div className="mb-6 rounded-xl border border-cyan-500/20 bg-cyan-500/5 p-5">
+        <div className="p-6 border-b border-[#23262c] bg-[#8ff5ff]/5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-zinc-400">
-                {showingPrevious ? "Your previous score" : "Your score"}
+              <p className="text-[10px] font-mono uppercase tracking-widest text-[#aaabb0]">
+                {showingPrevious ? "Previous Score" : "Your Score"}
               </p>
-              <p className="mt-1 text-2xl font-bold text-cyan-400">
+              <p className="mt-1 text-2xl font-headline font-bold text-[#8ff5ff]">
                 {results.correctCount}/{results.totalQuestions} correct
               </p>
             </div>
             <div className="text-right">
-              <p className="text-sm text-zinc-400">Points earned</p>
-              <p className="mt-1 text-2xl font-bold text-emerald-400">
+              <p className="text-[10px] font-mono uppercase tracking-widest text-[#aaabb0]">Points Earned</p>
+              <p className="mt-1 text-2xl font-headline font-bold text-[#a2f31f]">
                 {results.score}/{maxPoints}
               </p>
             </div>
           </div>
           {results.correctCount === results.totalQuestions && (
-            <p className="mt-3 text-sm text-emerald-400">
-              Perfect score! You&apos;ve mastered this scenario.
+            <p className="mt-3 text-sm text-[#a2f31f] font-headline flex items-center gap-2">
+              <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>military_tech</span>
+              Perfect score! Mission accomplished.
             </p>
           )}
         </div>
       )}
 
-      <div className="space-y-6">
+      {/* Questions */}
+      <div className="divide-y divide-[#23262c]">
         {questions.map((q, index) => {
           const questionResult = results?.results[index];
           const previousAnswer = existingProgress && !gradeResult
@@ -130,51 +113,45 @@ export default function QuizClient({
             : undefined;
 
           return (
-            <div
-              key={index}
-              className="rounded-xl border border-zinc-800/50 bg-zinc-900/30 p-5"
-            >
-              <div className="mb-3 flex items-start gap-3">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-cyan-500/10 text-xs font-bold text-cyan-400">
-                  {index + 1}
+            <div key={index} className="p-6">
+              <div className="mb-4 flex items-start gap-4">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center bg-[#8ff5ff]/10 border border-[#8ff5ff]/20 text-xs font-bold text-[#8ff5ff] font-mono">
+                  {String(index + 1).padStart(2, '0')}
                 </span>
-                <p className="font-medium leading-relaxed text-zinc-200">
+                <p className="font-headline font-medium text-[#f6f6fc] leading-relaxed">
                   {q.question || q.text || ""}
                 </p>
               </div>
+
               {q.options && (
-                <div className="ml-10 space-y-2">
+                <div className="ml-12 space-y-2">
                   {q.options.map((opt, optIndex) => {
                     const letter = extractLetter(String(opt));
                     const isSelected = selectedAnswers[index] === letter;
                     const isPreviousAnswer = previousAnswer === letter;
                     const isActive = isSelected || (showingPrevious && isPreviousAnswer);
 
-                    let borderClass =
-                      "border-zinc-800/30 hover:border-zinc-700";
-                    let bgClass = "bg-zinc-900/20";
-                    let textClass = "text-zinc-400 hover:text-zinc-300";
+                    let borderClass = "border-[#23262c] hover:border-[#46484d]";
+                    let bgClass = "bg-[#0c0e12]";
+                    let textClass = "text-[#aaabb0] hover:text-[#f6f6fc]";
 
                     if (questionResult) {
-                      const isCorrectAnswer =
-                        letter === questionResult.correctAnswer;
-                      const isUserAnswer =
-                        letter === questionResult.userAnswer ||
-                        (showingPrevious && isPreviousAnswer);
+                      const isCorrectAnswer = letter === questionResult.correctAnswer;
+                      const isUserAnswer = letter === questionResult.userAnswer || (showingPrevious && isPreviousAnswer);
 
                       if (isCorrectAnswer) {
-                        borderClass = "border-emerald-500/40";
-                        bgClass = "bg-emerald-500/10";
-                        textClass = "text-emerald-300";
+                        borderClass = "border-[#a2f31f]/40";
+                        bgClass = "bg-[#a2f31f]/10";
+                        textClass = "text-[#a2f31f]";
                       } else if (isUserAnswer && !questionResult.isCorrect) {
-                        borderClass = "border-red-500/40";
-                        bgClass = "bg-red-500/10";
-                        textClass = "text-red-300";
+                        borderClass = "border-[#ff716c]/40";
+                        bgClass = "bg-[#ff716c]/10";
+                        textClass = "text-[#ff716c] line-through";
                       }
                     } else if (isActive) {
-                      borderClass = "border-cyan-500/40";
-                      bgClass = "bg-cyan-500/10";
-                      textClass = "text-cyan-300";
+                      borderClass = "border-[#8ff5ff]/40";
+                      bgClass = "bg-[#8ff5ff]/10";
+                      textClass = "text-[#8ff5ff]";
                     }
 
                     return (
@@ -183,52 +160,52 @@ export default function QuizClient({
                         type="button"
                         onClick={() => selectAnswer(index, letter)}
                         disabled={!!results}
-                        className={`w-full cursor-pointer rounded-lg border px-4 py-2.5 text-left text-sm transition-colors ${borderClass} ${bgClass} ${textClass} ${results ? "cursor-default" : ""}`}
+                        className={`group flex items-start gap-4 w-full p-4 text-left border transition-all duration-200 ${borderClass} ${bgClass} ${textClass} ${results ? "cursor-default" : "cursor-pointer"}`}
                       >
-                        <div className="flex items-center gap-3">
-                          <span
-                            className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-xs ${
-                              isActive && !results
-                                ? "border-cyan-400 bg-cyan-400 text-zinc-900"
-                                : questionResult &&
-                                    letter === questionResult.correctAnswer
-                                  ? "border-emerald-400 bg-emerald-400 text-zinc-900"
-                                  : questionResult &&
-                                      (letter === questionResult.userAnswer ||
-                                        (showingPrevious && isPreviousAnswer)) &&
-                                      !questionResult.isCorrect
-                                    ? "border-red-400 bg-red-400 text-zinc-900"
-                                    : "border-zinc-600"
-                            }`}
-                          >
-                            {letter}
+                        <span className={`flex h-6 w-6 shrink-0 items-center justify-center border text-xs font-bold font-mono ${
+                          questionResult && letter === questionResult.correctAnswer
+                            ? "border-[#a2f31f] bg-[#a2f31f] text-[#0c0e12]"
+                            : questionResult && (letter === questionResult.userAnswer || (showingPrevious && isPreviousAnswer)) && !questionResult.isCorrect
+                              ? "border-[#ff716c] bg-[#ff716c] text-[#0c0e12]"
+                              : isActive && !results
+                                ? "border-[#8ff5ff] bg-[#8ff5ff] text-[#0c0e12]"
+                                : "border-[#46484d]"
+                        }`}>
+                          {letter}
+                        </span>
+                        <span className="flex-1 font-headline text-sm">{String(opt)}</span>
+                        {!results && (
+                          <span className="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 transition-opacity text-[#8ff5ff]">
+                            arrow_forward_ios
                           </span>
-                          {String(opt)}
-                        </div>
+                        )}
                       </button>
                     );
                   })}
                 </div>
               )}
+
+              {/* Result feedback */}
               {questionResult && (
-                <div className="ml-10 mt-2 space-y-2">
+                <div className="ml-12 mt-3 space-y-3">
                   {questionResult.isCorrect ? (
-                    <p className="text-xs text-emerald-400">Correct!</p>
+                    <p className="text-xs text-[#a2f31f] flex items-center gap-2 font-mono">
+                      <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                      CORRECT
+                    </p>
                   ) : (
-                    <p className="text-xs text-red-400">
-                      Incorrect — the correct answer is{" "}
-                      {questionResult.correctAnswer}
+                    <p className="text-xs text-[#ff716c] flex items-center gap-2 font-mono">
+                      <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>cancel</span>
+                      INCORRECT — Correct answer: {questionResult.correctAnswer}
                     </p>
                   )}
                   {explanations[index] && (
-                    <div className="rounded-lg border border-zinc-800/50 bg-zinc-900/40 p-3">
-                      <div className="mb-1 flex items-center gap-1.5">
-                        <svg className="h-3.5 w-3.5 text-cyan-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.509 1.333 1.509 2.316V18" />
-                        </svg>
-                        <span className="text-xs font-medium text-cyan-400">Why?</span>
+                    <div className="p-4 bg-[#0c0e12] border-l-2 border-[#8ff5ff]/30">
+                      <div className="mb-2 flex items-center gap-2">
+                        <span className="material-symbols-outlined text-[#8ff5ff] text-sm">lightbulb</span>
+                        <span className="text-[10px] font-mono text-[#8ff5ff] uppercase tracking-widest">Intelligence</span>
                       </div>
-                      <p className="text-xs leading-relaxed text-zinc-400">
+                      <p className="text-xs leading-relaxed text-[#aaabb0]">
                         {explanations[index]}
                       </p>
                     </div>
@@ -242,17 +219,17 @@ export default function QuizClient({
 
       {/* Submit button */}
       {!results && (
-        <div className="mt-8 flex items-center gap-4">
+        <div className="p-6 border-t border-[#23262c] flex items-center gap-4">
           <button
             type="button"
             onClick={handleSubmit}
             disabled={!allAnswered || submitting}
-            className="rounded-xl bg-gradient-to-r from-cyan-500 to-violet-500 px-8 py-3 text-sm font-semibold text-white transition-opacity disabled:opacity-40"
+            className="px-8 py-3 bg-[#a2f31f] text-[#294300] font-headline font-bold text-xs uppercase tracking-widest transition-all disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-[0_0_20px_rgba(162,243,31,0.3)] active:scale-95"
           >
             {submitting ? "Grading..." : "Submit Answers"}
           </button>
           {!allAnswered && (
-            <p className="text-xs text-zinc-500">
+            <p className="text-[10px] font-mono text-[#aaabb0] uppercase tracking-widest">
               Answer all {questions.length} questions to submit
             </p>
           )}
@@ -260,9 +237,14 @@ export default function QuizClient({
       )}
 
       {error && (
-        <p className="mt-4 text-sm text-red-400">{error}</p>
+        <div className="px-6 pb-6">
+          <p className="text-sm text-[#ff716c] flex items-center gap-2">
+            <span className="material-symbols-outlined text-sm">error</span>
+            {error}
+          </p>
+        </div>
       )}
-    </section>
+    </div>
   );
 }
 
