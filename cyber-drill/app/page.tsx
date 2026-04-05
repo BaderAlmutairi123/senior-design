@@ -161,15 +161,15 @@ export default async function Home() {
         {/* left */}
         <div className="max-w-xl">
           <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#8ff5ff] mb-3">
-            Operator Dashboard
+            Dashboard
           </p>
           <h1 className="font-headline font-bold text-4xl text-[#f6f6fc] leading-tight">
-            Good Morning, Operator.
+            Welcome back.
           </h1>
           <p className="mt-3 text-[#aaabb0] text-base leading-relaxed">
             You are{" "}
             <span className="text-[#8ff5ff] font-semibold">{completionPct}%</span>{" "}
-            through your training missions.
+            through your training scenarios.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-4">
@@ -180,7 +180,7 @@ export default async function Home() {
               <span className="material-symbols-outlined text-[18px]">
                 rocket_launch
               </span>
-              Resume Deployment
+              Continue Training
             </Link>
             <Link
               href="/progress"
@@ -189,7 +189,7 @@ export default async function Home() {
               <span className="material-symbols-outlined text-[18px]">
                 bar_chart
               </span>
-              Intel Briefing
+              View Progress
             </Link>
           </div>
         </div>
@@ -256,7 +256,7 @@ export default async function Home() {
         <section className="lg:col-span-2">
           <div className="flex items-center justify-between mb-5">
             <h2 className="font-headline font-bold text-lg text-[#f6f6fc]">
-              Active Operations
+              Recent Scenarios
             </h2>
             <Link
               href="/scenarios"
@@ -361,7 +361,7 @@ export default async function Home() {
             {scenarios.length === 0 && (
               <div className="bg-[#111318] rounded-lg border border-[#23262c]/50 p-8 text-center">
                 <p className="text-[#aaabb0] text-sm">
-                  No active operations available.
+                  No scenarios available yet.
                 </p>
               </div>
             )}
@@ -371,7 +371,7 @@ export default async function Home() {
         {/* Operator Profiling – 1/3 width */}
         <section>
           <h2 className="font-headline font-bold text-lg text-[#f6f6fc] mb-5">
-            Operator Profiling
+            Skill Breakdown
           </h2>
 
           <div className="bg-[#111318] rounded-lg border border-[#23262c]/50 p-6 flex flex-col gap-6">
@@ -404,7 +404,7 @@ export default async function Home() {
             <div className="pt-4 border-t border-[#23262c]/50">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#aaabb0]">
-                  Overall Clearance
+                  Overall Progress
                 </span>
                 <span className="text-sm font-headline font-bold text-[#8ff5ff]">
                   {completionPct}%

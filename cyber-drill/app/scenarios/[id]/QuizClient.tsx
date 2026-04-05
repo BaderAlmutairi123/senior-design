@@ -66,7 +66,7 @@ export default function QuizClient({
         <div className="flex items-center gap-3">
           <span className="material-symbols-outlined text-[#d873ff]" style={{ fontVariationSettings: "'FILL' 1" }}>quiz</span>
           <h2 className="font-headline font-bold text-sm uppercase tracking-widest text-[#f6f6fc]">
-            Response Matrix
+            Quiz
           </h2>
         </div>
         {showingPrevious && (
@@ -97,8 +97,8 @@ export default function QuizClient({
           </div>
           {results.correctCount === results.totalQuestions && (
             <p className="mt-3 text-sm text-[#a2f31f] font-headline flex items-center gap-2">
-              <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>military_tech</span>
-              Perfect score! Mission accomplished.
+              <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+              Perfect score! Great job.
             </p>
           )}
         </div>
@@ -203,7 +203,7 @@ export default function QuizClient({
                     <div className="p-4 bg-[#0c0e12] border-l-2 border-[#8ff5ff]/30">
                       <div className="mb-2 flex items-center gap-2">
                         <span className="material-symbols-outlined text-[#8ff5ff] text-sm">lightbulb</span>
-                        <span className="text-[10px] font-mono text-[#8ff5ff] uppercase tracking-widest">Intelligence</span>
+                        <span className="text-[10px] font-mono text-[#8ff5ff] uppercase tracking-widest">Explanation</span>
                       </div>
                       <p className="text-xs leading-relaxed text-[#aaabb0]">
                         {explanations[index]}

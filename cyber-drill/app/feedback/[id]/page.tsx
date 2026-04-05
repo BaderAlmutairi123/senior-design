@@ -52,11 +52,11 @@ export default async function FeedbackPage({
 
   let performanceTier: { label: string; color: string; message: string };
   if (percentage === 100) {
-    performanceTier = { label: "PERFECT", color: "text-[#a2f31f]", message: "Outstanding! Full operational mastery achieved." };
+    performanceTier = { label: "PERFECT", color: "text-[#a2f31f]", message: "Outstanding! You aced this scenario." };
   } else if (percentage >= 70) {
     performanceTier = { label: "PROFICIENT", color: "text-[#8ff5ff]", message: "Solid performance. Review missed items to achieve mastery." };
   } else if (percentage >= 40) {
-    performanceTier = { label: "DEVELOPING", color: "text-[#d873ff]", message: "Room for improvement. Review intelligence reports and retry." };
+    performanceTier = { label: "DEVELOPING", color: "text-[#d873ff]", message: "Room for improvement. Review the explanations and retry." };
   } else {
     performanceTier = { label: "NEEDS TRAINING", color: "text-[#ff716c]", message: "Additional study required. Review all materials before retaking." };
   }
@@ -73,7 +73,7 @@ export default async function FeedbackPage({
           Back to Drills
         </Link>
         <h1 className="font-headline font-bold text-3xl tracking-tighter text-[#f6f6fc]">
-          After Action Report
+          Results
         </h1>
         <p className="mt-2 text-sm text-[#aaabb0]">
           {scenario.title} &mdash; Completed {new Date(progress.completed_at).toLocaleDateString("en-US", {
@@ -197,7 +197,7 @@ export default async function FeedbackPage({
                     <div className="p-4 bg-[#0c0e12] border-l-2 border-[#8ff5ff]/30">
                       <div className="mb-2 flex items-center gap-2">
                         <span className="material-symbols-outlined text-[#8ff5ff] text-sm">lightbulb</span>
-                        <span className="text-[10px] font-mono text-[#8ff5ff] uppercase tracking-widest">Intelligence</span>
+                        <span className="text-[10px] font-mono text-[#8ff5ff] uppercase tracking-widest">Explanation</span>
                       </div>
                       <p className="text-xs leading-relaxed text-[#aaabb0]">{explanations[index]}</p>
                     </div>

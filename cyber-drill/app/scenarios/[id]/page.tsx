@@ -129,10 +129,10 @@ export default async function ScenarioViewerPage({
             <div className="p-8 font-mono text-sm leading-relaxed relative z-10">
               {content.instructions && (
                 <div className="mb-6">
-                  <span className="text-[#a2f31f]">root@sovereign:~$</span>{" "}
-                  <span className="text-[#f6f6fc]">cat mission_briefing.txt</span>
+                  <span className="text-[#a2f31f]">cyberdrill@lab:~$</span>{" "}
+                  <span className="text-[#f6f6fc]">cat briefing.txt</span>
                   <div className="mt-3 p-6 bg-[#8ff5ff]/5 border-l-2 border-[#8ff5ff]/40">
-                    <h2 className="text-[#8ff5ff] font-headline text-lg mb-3 tracking-wide uppercase">Mission Briefing</h2>
+                    <h2 className="text-[#8ff5ff] font-headline text-lg mb-3 tracking-wide uppercase">Scenario Briefing</h2>
                     <p className="text-[#f6f6fc] text-base font-sans leading-relaxed">
                       {content.instructions}
                     </p>
@@ -142,10 +142,10 @@ export default async function ScenarioViewerPage({
 
               {content.background && (
                 <div className="mb-6">
-                  <span className="text-[#a2f31f]">root@sovereign:~$</span>{" "}
-                  <span className="text-[#f6f6fc]">cat intel_report.txt</span>
+                  <span className="text-[#a2f31f]">cyberdrill@lab:~$</span>{" "}
+                  <span className="text-[#f6f6fc]">cat background.txt</span>
                   <div className="mt-3 p-6 bg-[#d873ff]/5 border-l-2 border-[#d873ff]/40">
-                    <h2 className="text-[#d873ff] font-headline text-lg mb-3 tracking-wide uppercase">Intelligence Report</h2>
+                    <h2 className="text-[#d873ff] font-headline text-lg mb-3 tracking-wide uppercase">Background</h2>
                     <p className="text-[#aaabb0] text-base font-sans leading-relaxed">
                       {content.background}
                     </p>
@@ -208,7 +208,7 @@ export default async function ScenarioViewerPage({
 
           {/* Scenario Info */}
           <div className="bg-[#111318] p-6 space-y-4">
-            <h3 className="font-headline font-bold uppercase tracking-widest text-sm text-[#aaabb0]">Mission Details</h3>
+            <h3 className="font-headline font-bold uppercase tracking-widest text-sm text-[#aaabb0]">Scenario Details</h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between p-3 bg-[#000000] border border-[#23262c]">
                 <div className="flex items-center gap-3">

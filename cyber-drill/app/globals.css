@@ -1,41 +1,41 @@
 @import "tailwindcss";
 
 :root {
-  /* Sovereign Operator color tokens */
-  --so-primary: #8ff5ff;
-  --so-primary-dim: #00deec;
-  --so-secondary: #a2f31f;
-  --so-tertiary: #d873ff;
-  --so-error: #ff716c;
-  --so-surface: #0c0e12;
-  --so-surface-container: #171a1f;
-  --so-surface-container-low: #111318;
-  --so-surface-container-high: #1d2025;
-  --so-surface-container-highest: #23262c;
-  --so-surface-container-lowest: #000000;
-  --so-on-surface: #f6f6fc;
-  --so-on-surface-variant: #aaabb0;
-  --so-outline: #74757a;
-  --so-outline-variant: #46484d;
+  /* CyberDrill color tokens */
+  --cd-primary: #8ff5ff;
+  --cd-primary-dim: #00deec;
+  --cd-secondary: #a2f31f;
+  --cd-tertiary: #d873ff;
+  --cd-error: #ff716c;
+  --cd-surface: #0c0e12;
+  --cd-surface-container: #171a1f;
+  --cd-surface-container-low: #111318;
+  --cd-surface-container-high: #1d2025;
+  --cd-surface-container-highest: #23262c;
+  --cd-surface-container-lowest: #000000;
+  --cd-on-surface: #f6f6fc;
+  --cd-on-surface-variant: #aaabb0;
+  --cd-outline: #74757a;
+  --cd-outline-variant: #46484d;
 }
 
 @theme inline {
-  --color-background: var(--so-surface);
-  --color-foreground: var(--so-on-surface);
+  --color-background: var(--cd-surface);
+  --color-foreground: var(--cd-on-surface);
   --font-sans: 'Inter', sans-serif;
   --font-headline: 'Space Grotesk', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 }
 
 body {
-  background: var(--so-surface);
-  color: var(--so-on-surface);
+  background: var(--cd-surface);
+  color: var(--cd-on-surface);
   font-family: 'Inter', sans-serif;
 }
 
 .font-headline { font-family: 'Space Grotesk', sans-serif; }
 
-/* Sovereign Operator Design System */
+/* CyberDrill Design System */
 
 /* Scanline overlay effect */
 .scanline {

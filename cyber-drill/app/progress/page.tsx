@@ -158,10 +158,10 @@ export default async function ProgressPage() {
     <AppShell email={user.email ?? ""} activePath="/progress">
       {/* Page Header */}
       <div className="mb-8">
-        <h1 className="font-headline font-bold text-4xl tracking-tighter text-[var(--so-on-surface)]">
+        <h1 className="font-headline font-bold text-4xl tracking-tighter text-[var(--cd-on-surface)]">
           Your Progress
         </h1>
-        <p className="mt-2 text-sm text-[var(--so-on-surface-variant)]">
+        <p className="mt-2 text-sm text-[var(--cd-on-surface-variant)]">
           {user.email} &mdash; {overallPercent}% complete
         </p>
       </div>
@@ -173,7 +173,7 @@ export default async function ProgressPage() {
         <div className="col-span-12 lg:col-span-8 bg-[#111318] rounded-sm border border-[#23262c] p-6">
           {/* Panel Header */}
           <div className="flex items-center justify-between mb-6">
-            <h2 className="font-headline font-semibold text-lg text-[var(--so-on-surface)]">
+            <h2 className="font-headline font-semibold text-lg text-[var(--cd-on-surface)]">
               Personal Skill Tree
             </h2>
             <div className="flex items-center gap-1.5">
@@ -209,7 +209,7 @@ export default async function ProgressPage() {
                   >
                     <span
                       className={`material-symbols-outlined text-2xl ${
-                        isActive ? config.textClass : "text-[var(--so-outline)]"
+                        isActive ? config.textClass : "text-[var(--cd-outline)]"
                       }`}
                       style={isActive ? { filter: `drop-shadow(0 0 6px ${config.color}66)` } : undefined}
                     >
@@ -229,10 +229,10 @@ export default async function ProgressPage() {
                     />
                   </div>
 
-                  <p className="text-xs text-[var(--so-on-surface-variant)]">
+                  <p className="text-xs text-[var(--cd-on-surface-variant)]">
                     <span className={config.textClass}>{ds.completed}</span> / {ds.total} completed
                   </p>
-                  <p className="text-[10px] text-[var(--so-outline)] mt-0.5">
+                  <p className="text-[10px] text-[var(--cd-outline)] mt-0.5">
                     {ds.points} / {ds.maxPoints} pts
                   </p>
                 </div>
@@ -249,10 +249,10 @@ export default async function ProgressPage() {
               <span className="material-symbols-outlined text-[#8ff5ff]">bolt</span>
             </div>
             <div>
-              <p className="text-[10px] font-mono uppercase tracking-widest text-[var(--so-on-surface-variant)]">
+              <p className="text-[10px] font-mono uppercase tracking-widest text-[var(--cd-on-surface-variant)]">
                 Total Score
               </p>
-              <p className="font-headline text-2xl font-bold text-[var(--so-on-surface)]">
+              <p className="font-headline text-2xl font-bold text-[var(--cd-on-surface)]">
                 {stats.totalPoints}
               </p>
             </div>
@@ -264,11 +264,11 @@ export default async function ProgressPage() {
               <span className="material-symbols-outlined text-[#a2f31f]">check_circle</span>
             </div>
             <div>
-              <p className="text-[10px] font-mono uppercase tracking-widest text-[var(--so-on-surface-variant)]">
+              <p className="text-[10px] font-mono uppercase tracking-widest text-[var(--cd-on-surface-variant)]">
                 Scenarios Completed
               </p>
-              <p className="font-headline text-2xl font-bold text-[var(--so-on-surface)]">
-                {stats.completed} <span className="text-sm font-normal text-[var(--so-outline)]">/ {stats.totalScenarios}</span>
+              <p className="font-headline text-2xl font-bold text-[var(--cd-on-surface)]">
+                {stats.completed} <span className="text-sm font-normal text-[var(--cd-outline)]">/ {stats.totalScenarios}</span>
               </p>
             </div>
           </div>
@@ -279,10 +279,10 @@ export default async function ProgressPage() {
               <span className="material-symbols-outlined text-[#d873ff]">trending_up</span>
             </div>
             <div>
-              <p className="text-[10px] font-mono uppercase tracking-widest text-[var(--so-on-surface-variant)]">
+              <p className="text-[10px] font-mono uppercase tracking-widest text-[var(--cd-on-surface-variant)]">
                 Completion
               </p>
-              <p className="font-headline text-2xl font-bold text-[var(--so-on-surface)]">
+              <p className="font-headline text-2xl font-bold text-[var(--cd-on-surface)]">
                 {overallPercent}%
               </p>
             </div>
@@ -291,7 +291,7 @@ export default async function ProgressPage() {
 
         {/* ===== Performance Trajectory (col-span-7) ===== */}
         <div className="col-span-12 lg:col-span-7 bg-[#111318] rounded-sm border border-[#23262c] p-6">
-          <h2 className="font-headline font-semibold text-sm text-[var(--so-on-surface)] mb-4">
+          <h2 className="font-headline font-semibold text-sm text-[var(--cd-on-surface)] mb-4">
             Performance Trajectory
           </h2>
           <div className="w-full h-32 relative">
@@ -357,10 +357,10 @@ export default async function ProgressPage() {
         {/* ===== Badge Gallery (col-span-5) ===== */}
         <div className="col-span-12 lg:col-span-5 bg-[#111318] rounded-sm border border-[#23262c] p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-headline font-semibold text-sm text-[var(--so-on-surface)]">
+            <h2 className="font-headline font-semibold text-sm text-[var(--cd-on-surface)]">
               Badge Gallery
             </h2>
-            <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--so-on-surface-variant)]">
+            <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--cd-on-surface-variant)]">
               {earnedBadges.size} / {badgeDefinitions.length} unlocked
             </span>
           </div>
@@ -371,7 +371,7 @@ export default async function ProgressPage() {
                 <div
                   key={badge.key}
                   className={`flex flex-col items-center gap-1.5 rounded-sm p-2.5 transition-all ${
-                    earned ? badge.colorClass : "bg-[#171a1f] text-[var(--so-outline)] opacity-40"
+                    earned ? badge.colorClass : "bg-[#171a1f] text-[var(--cd-outline)] opacity-40"
                   }`}
                   title={badge.label}
                 >
@@ -390,7 +390,7 @@ export default async function ProgressPage() {
         {/* ===== Completed Scenarios (full width) ===== */}
         {completedScenarios.length > 0 && (
           <div className="col-span-12 bg-[#111318] rounded-sm border border-[#23262c] p-6">
-            <h2 className="font-headline font-semibold text-sm text-[var(--so-on-surface)] mb-4">
+            <h2 className="font-headline font-semibold text-sm text-[var(--cd-on-surface)] mb-4">
               Completed Scenarios
             </h2>
             <div className="space-y-2">
@@ -413,7 +413,7 @@ export default async function ProgressPage() {
                       </span>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm text-[var(--so-on-surface)] truncate group-hover:text-[#8ff5ff] transition-colors">
+                      <p className="font-medium text-sm text-[var(--cd-on-surface)] truncate group-hover:text-[#8ff5ff] transition-colors">
                         {s.title}
                       </p>
                     </div>
@@ -422,13 +422,13 @@ export default async function ProgressPage() {
                     >
                       {s.difficulty}
                     </span>
-                    <span className="text-sm font-mono font-bold text-[var(--so-on-surface)]">
+                    <span className="text-sm font-mono font-bold text-[var(--cd-on-surface)]">
                       {pct}%
                     </span>
-                    <span className="text-xs font-mono text-[var(--so-outline)] w-20 text-right">
+                    <span className="text-xs font-mono text-[var(--cd-outline)] w-20 text-right">
                       {s.progress.score}/{s.points} pts
                     </span>
-                    <span className="text-xs font-mono text-[var(--so-outline)] w-16 text-right hidden sm:block">
+                    <span className="text-xs font-mono text-[var(--cd-outline)] w-16 text-right hidden sm:block">
                       {new Date(s.progress.completed_at).toLocaleDateString("en-US", {
                         month: "short",
                         day: "numeric",
@@ -444,7 +444,7 @@ export default async function ProgressPage() {
         {/* ===== Pending Scenarios (full width) ===== */}
         {pendingScenarios.length > 0 && (
           <div className="col-span-12 bg-[#111318] rounded-sm border border-[#23262c] p-6">
-            <h2 className="font-headline font-semibold text-sm text-[var(--so-on-surface)] mb-4">
+            <h2 className="font-headline font-semibold text-sm text-[var(--cd-on-surface)] mb-4">
               Pending Scenarios
             </h2>
             <div className="space-y-2">
@@ -457,12 +457,12 @@ export default async function ProgressPage() {
                     className="flex items-center gap-4 rounded-sm border border-[#23262c] bg-[#171a1f] px-4 py-3"
                   >
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm bg-[#1d2025]">
-                      <span className="material-symbols-outlined text-lg text-[var(--so-outline)]">
+                      <span className="material-symbols-outlined text-lg text-[var(--cd-outline)]">
                         lock
                       </span>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm text-[var(--so-on-surface-variant)] truncate">
+                      <p className="font-medium text-sm text-[var(--cd-on-surface-variant)] truncate">
                         {s.title}
                       </p>
                     </div>
@@ -471,7 +471,7 @@ export default async function ProgressPage() {
                     >
                       {s.difficulty}
                     </span>
-                    <span className="text-xs font-mono text-[var(--so-outline)] w-20 text-right">
+                    <span className="text-xs font-mono text-[var(--cd-outline)] w-20 text-right">
                       {s.points} pts
                     </span>
                     <Link
@@ -491,37 +491,37 @@ export default async function ProgressPage() {
       {/* ===== Bottom Stats Bar ===== */}
       <div className="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="border-l-4 border-[#8ff5ff] bg-[#111318] rounded-sm border-y border-r border-[#23262c] p-4">
-          <p className="text-[10px] font-mono uppercase tracking-widest text-[var(--so-on-surface-variant)]">
+          <p className="text-[10px] font-mono uppercase tracking-widest text-[var(--cd-on-surface-variant)]">
             Total Points
           </p>
-          <p className="font-headline text-xl font-bold text-[var(--so-on-surface)] mt-1">
+          <p className="font-headline text-xl font-bold text-[var(--cd-on-surface)] mt-1">
             {stats.totalPoints}
-            <span className="text-xs font-normal text-[var(--so-outline)] ml-1">/ {totalMaxPoints}</span>
+            <span className="text-xs font-normal text-[var(--cd-outline)] ml-1">/ {totalMaxPoints}</span>
           </p>
         </div>
         <div className="border-l-4 border-[#a2f31f] bg-[#111318] rounded-sm border-y border-r border-[#23262c] p-4">
-          <p className="text-[10px] font-mono uppercase tracking-widest text-[var(--so-on-surface-variant)]">
+          <p className="text-[10px] font-mono uppercase tracking-widest text-[var(--cd-on-surface-variant)]">
             Drills Completed
           </p>
-          <p className="font-headline text-xl font-bold text-[var(--so-on-surface)] mt-1">
+          <p className="font-headline text-xl font-bold text-[var(--cd-on-surface)] mt-1">
             {stats.completed}
-            <span className="text-xs font-normal text-[var(--so-outline)] ml-1">/ {stats.totalScenarios}</span>
+            <span className="text-xs font-normal text-[var(--cd-outline)] ml-1">/ {stats.totalScenarios}</span>
           </p>
         </div>
         <div className="border-l-4 border-[#d873ff] bg-[#111318] rounded-sm border-y border-r border-[#23262c] p-4">
-          <p className="text-[10px] font-mono uppercase tracking-widest text-[var(--so-on-surface-variant)]">
+          <p className="text-[10px] font-mono uppercase tracking-widest text-[var(--cd-on-surface-variant)]">
             Badges Earned
           </p>
-          <p className="font-headline text-xl font-bold text-[var(--so-on-surface)] mt-1">
+          <p className="font-headline text-xl font-bold text-[var(--cd-on-surface)] mt-1">
             {earnedBadges.size}
-            <span className="text-xs font-normal text-[var(--so-outline)] ml-1">/ {badgeDefinitions.length}</span>
+            <span className="text-xs font-normal text-[var(--cd-outline)] ml-1">/ {badgeDefinitions.length}</span>
           </p>
         </div>
         <div className="border-l-4 border-[#ff716c] bg-[#111318] rounded-sm border-y border-r border-[#23262c] p-4">
-          <p className="text-[10px] font-mono uppercase tracking-widest text-[var(--so-on-surface-variant)]">
+          <p className="text-[10px] font-mono uppercase tracking-widest text-[var(--cd-on-surface-variant)]">
             Accuracy
           </p>
-          <p className="font-headline text-xl font-bold text-[var(--so-on-surface)] mt-1">
+          <p className="font-headline text-xl font-bold text-[var(--cd-on-surface)] mt-1">
             {accuracyPercent}%
           </p>
         </div>

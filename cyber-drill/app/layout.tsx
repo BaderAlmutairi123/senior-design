@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Sovereign Operator | CyberDrill",
+  title: "CyberDrill — Cybersecurity Training Platform",
   description: "CyberDrill - Cybersecurity Training Platform",
 };
 
