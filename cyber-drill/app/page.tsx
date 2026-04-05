@@ -1,7 +1,124 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { getUserStats } from "@/lib/scenarios/queries";
+import {
+  getUserStats,
+  getScenarios,
+  getAllUserProgress,
+} from "@/lib/scenarios/queries";
 import Link from "next/link";
+import AppShell from "@/components/layout/AppShell";
+import type { Scenario, UserProgress } from "@/types/scenario";
+
+/* ── helpers ─────────────────────────────────────────────────────────── */
+
+function scenarioIcon(type: string): string {
+  switch (type.toLowerCase()) {
+    case "quiz":
+      return "quiz";
+    case "simulation":
+      return "terminal";
+    case "lab":
+      return "science";
+    case "ctf":
+      return "flag";
+    case "network":
+      return "lan";
+    case "forensics":
+      return "fingerprint";
+    default:
+      return "shield";
+  }
+}
+
+const difficultyColor: Record<string, string> = {
+  beginner: "#a2f31f",
+  intermediate: "#8ff5ff",
+  advanced: "#d873ff",
+};
+
+const difficultyBg: Record<string, string> = {
+  beginner: "rgba(162,243,31,0.10)",
+  intermediate: "rgba(143,245,255,0.10)",
+  advanced: "rgba(216,115,255,0.10)",
+};
+
+const difficultyBorder: Record<string, string> = {
+  beginner: "border-l-[#a2f31f]",
+  intermediate: "border-l-[#8ff5ff]",
+  advanced: "border-l-[#d873ff]",
+};
+
+/* ── progress ring SVG ───────────────────────────────────────────────── */
+
+function ProgressRing({
+  percent,
+  size = 180,
+  strokeWidth = 10,
+}: {
+  percent: number;
+  size?: number;
+  strokeWidth?: number;
+}) {
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (percent / 100) * circumference;
+
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox={`0 0 ${size} ${size}`}
+      className="drop-shadow-[0_0_24px_rgba(143,245,255,0.15)]"
+    >
+      {/* track */}
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={radius}
+        fill="none"
+        stroke="#23262c"
+        strokeWidth={strokeWidth}
+      />
+      {/* filled arc */}
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={radius}
+        fill="none"
+        stroke="#8ff5ff"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeDasharray={circumference}
+        strokeDashoffset={offset}
+        transform={`rotate(-90 ${size / 2} ${size / 2})`}
+        className="transition-all duration-700"
+      />
+      {/* center label */}
+      <text
+        x="50%"
+        y="46%"
+        dominantBaseline="middle"
+        textAnchor="middle"
+        className="fill-[#f6f6fc] font-headline text-3xl font-bold"
+        style={{ fontSize: 32 }}
+      >
+        {percent}%
+      </text>
+      <text
+        x="50%"
+        y="62%"
+        dominantBaseline="middle"
+        textAnchor="middle"
+        className="fill-[#aaabb0] font-mono uppercase"
+        style={{ fontSize: 9, letterSpacing: "0.2em" }}
+      >
+        Complete
+      </text>
+    </svg>
+  );
+}
+
+/* ── page ─────────────────────────────────────────────────────────────── */
 
 export default async function Home() {
   const supabase = await createClient();
@@ -13,135 +130,296 @@ export default async function Home() {
     redirect("/login");
   }
 
-  const { totalScenarios, completed, totalPoints } = await getUserStats(user.id);
+  const [stats, scenarios, progressList] = await Promise.all([
+    getUserStats(user.id),
+    getScenarios(),
+    getAllUserProgress(user.id),
+  ]);
 
-  const cards = [
-    {
-      href: "/scenarios",
-      icon: (
-        <svg className="h-6 w-6 text-cyan-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
-        </svg>
-      ),
-      title: "Scenarios",
-      desc: "Browse and start cybersecurity training drills.",
-      stat: `${totalScenarios} available`,
-    },
-    {
-      href: "/feedback/submit",
-      icon: (
-        <svg className="h-6 w-6 text-violet-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
-        </svg>
-      ),
-      title: "Feedback",
-      desc: "Share your experience and help us improve.",
-      stat: "New",
-    },
-    {
-      href: "/progress",
-      icon: (
-        <svg className="h-6 w-6 text-emerald-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" />
-        </svg>
-      ),
-      title: "Progress",
-      desc: "Track your training progress and performance.",
-      stat: `${completed} done`,
-    },
-  ];
+  const { totalScenarios, completed, totalPoints } = stats;
+  const completionPct =
+    totalScenarios > 0 ? Math.round((completed / totalScenarios) * 100) : 0;
+
+  // Build a set of completed scenario IDs for quick lookup
+  const completedIds = new Set(progressList.map((p) => p.scenario_id));
+
+  // Build per-difficulty progress for the profiling section
+  const difficultyStats = (["beginner", "intermediate", "advanced"] as const).map(
+    (level) => {
+      const total = scenarios.filter((s) => s.difficulty === level).length;
+      const done = scenarios.filter(
+        (s) => s.difficulty === level && completedIds.has(s.id)
+      ).length;
+      return { level, total, done, pct: total > 0 ? Math.round((done / total) * 100) : 0 };
+    }
+  );
 
   return (
-    <div className="cyber-grid min-h-screen bg-[#0a0a0f]">
-      {/* Decorative glow orbs */}
-      <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute -left-32 top-0 h-96 w-96 rounded-full bg-cyan-500/5 blur-3xl" />
-        <div className="absolute -right-32 bottom-0 h-96 w-96 rounded-full bg-violet-500/5 blur-3xl" />
-      </div>
-
-      {/* Header */}
-      <header className="relative z-10 border-b border-zinc-800/50">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-cyan-500/10 ring-1 ring-cyan-500/20">
-              <svg className="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
-              </svg>
-            </div>
-            <span className="gradient-text text-lg font-bold tracking-tight">CyberDrill</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/50 px-3 py-1.5">
-              <div className="h-2 w-2 rounded-full bg-emerald-400 pulse-glow" />
-              <span className="text-sm text-zinc-400">{user.email}</span>
-            </div>
-            <form action="/auth/signout" method="post">
-              <button
-                type="submit"
-                className="rounded-xl border border-zinc-800 px-4 py-2 text-sm font-medium text-zinc-400 transition-all hover:border-zinc-600 hover:text-zinc-200"
-              >
-                Sign out
-              </button>
-            </form>
-          </div>
-        </div>
-      </header>
-
-      {/* Main content */}
-      <main className="relative z-10 mx-auto max-w-6xl px-6 py-12">
-        {/* Welcome section */}
-        <div className="mb-10">
-          <h1 className="text-3xl font-bold tracking-tight text-zinc-100">
-            Dashboard
-          </h1>
-          <p className="mt-2 text-zinc-500">
-            Welcome back, <span className="text-zinc-300">{user.email}</span>
+    <AppShell email={user.email ?? ""} activePath="/">
+      {/* ── Hero ─────────────────────────────────────────────── */}
+      <section className="flex flex-col lg:flex-row items-center justify-between gap-10 mb-12">
+        {/* left */}
+        <div className="max-w-xl">
+          <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#8ff5ff] mb-3">
+            Operator Dashboard
           </p>
-        </div>
+          <h1 className="font-headline font-bold text-4xl text-[#f6f6fc] leading-tight">
+            Good Morning, Operator.
+          </h1>
+          <p className="mt-3 text-[#aaabb0] text-base leading-relaxed">
+            You are{" "}
+            <span className="text-[#8ff5ff] font-semibold">{completionPct}%</span>{" "}
+            through your training missions.
+          </p>
 
-        {/* Stats bar */}
-        <div className="mb-10 grid grid-cols-3 gap-4">
-          <div className="glass rounded-2xl p-5">
-            <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">Scenarios</p>
-            <p className="mt-1 text-2xl font-bold text-cyan-400">{totalScenarios}</p>
-          </div>
-          <div className="glass rounded-2xl p-5">
-            <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">Completed</p>
-            <p className="mt-1 text-2xl font-bold text-emerald-400">{completed}</p>
-          </div>
-          <div className="glass rounded-2xl p-5">
-            <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">Total Points</p>
-            <p className="mt-1 text-2xl font-bold text-violet-400">{totalPoints}</p>
-          </div>
-        </div>
-
-        {/* Quick actions */}
-        <h2 className="mb-4 text-sm font-medium uppercase tracking-wider text-zinc-500">Quick Actions</h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {cards.map((card) => (
+          <div className="mt-8 flex flex-wrap gap-4">
             <Link
-              key={card.title}
-              href={card.href}
-              className="card-glow group rounded-2xl border border-zinc-800/50 bg-zinc-900/30 p-6 transition-all hover:bg-zinc-900/50"
+              href="/scenarios"
+              className="inline-flex items-center gap-2 rounded-md bg-[#8ff5ff] px-6 py-3 text-sm font-bold uppercase tracking-wider text-[#005d63] transition-all hover:brightness-110 hover:shadow-[0_0_24px_rgba(143,245,255,0.25)]"
             >
-              <div className="mb-4 flex items-center justify-between">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-zinc-800/50 ring-1 ring-zinc-700/50 transition-all group-hover:ring-cyan-500/20">
-                  {card.icon}
+              <span className="material-symbols-outlined text-[18px]">
+                rocket_launch
+              </span>
+              Resume Deployment
+            </Link>
+            <Link
+              href="/progress"
+              className="inline-flex items-center gap-2 rounded-md border border-[#23262c] px-6 py-3 text-sm font-bold uppercase tracking-wider text-[#aaabb0] transition-all hover:border-[#8ff5ff]/40 hover:text-[#f6f6fc]"
+            >
+              <span className="material-symbols-outlined text-[18px]">
+                bar_chart
+              </span>
+              Intel Briefing
+            </Link>
+          </div>
+        </div>
+
+        {/* right – progress ring */}
+        <div className="flex-shrink-0">
+          <ProgressRing percent={completionPct} size={180} strokeWidth={10} />
+        </div>
+      </section>
+
+      {/* ── Stats Grid ───────────────────────────────────────── */}
+      <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+        {[
+          {
+            label: "Drills Completed",
+            value: completed,
+            icon: "task_alt",
+            color: "#8ff5ff",
+          },
+          {
+            label: "Skill Score",
+            value: totalPoints,
+            icon: "bolt",
+            color: "#a2f31f",
+          },
+          {
+            label: "Total Scenarios",
+            value: totalScenarios,
+            icon: "precision_manufacturing",
+            color: "#d873ff",
+          },
+          {
+            label: "Achievement Rate",
+            value: `${completionPct}%`,
+            icon: "military_tech",
+            color: "#8ff5ff",
+          },
+        ].map((card) => (
+          <div
+            key={card.label}
+            className="bg-[#111318] p-6 rounded-lg border border-[#23262c]/50 transition-all hover:border-[#8ff5ff]/20"
+          >
+            <div className="flex items-center gap-3 mb-3">
+              <span
+                className="material-symbols-outlined text-[22px]"
+                style={{ color: card.color }}
+              >
+                {card.icon}
+              </span>
+              <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#aaabb0]">
+                {card.label}
+              </span>
+            </div>
+            <p className="font-headline font-bold text-2xl text-[#f6f6fc]">
+              {card.value}
+            </p>
+          </div>
+        ))}
+      </section>
+
+      {/* ── Two-column: Operations + Profiling ───────────────── */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Active Operations – 2/3 width */}
+        <section className="lg:col-span-2">
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="font-headline font-bold text-lg text-[#f6f6fc]">
+              Active Operations
+            </h2>
+            <Link
+              href="/scenarios"
+              className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#8ff5ff] hover:text-[#8ff5ff]/70 transition-colors"
+            >
+              View All
+            </Link>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            {scenarios.slice(0, 6).map((scenario) => {
+              const isCompleted = completedIds.has(scenario.id);
+              const progress = progressList.find(
+                (p) => p.scenario_id === scenario.id
+              );
+              const segmentCount = 4;
+              const filledSegments = isCompleted
+                ? segmentCount
+                : progress
+                  ? Math.max(
+                      1,
+                      Math.round(
+                        (progress.correct_answers / progress.total_questions) *
+                          segmentCount
+                      )
+                    )
+                  : 0;
+
+              return (
+                <div
+                  key={scenario.id}
+                  className={`bg-[#111318] rounded-lg border border-[#23262c]/50 border-l-2 ${
+                    difficultyBorder[scenario.difficulty] ?? "border-l-[#8ff5ff]"
+                  } p-4 flex items-center gap-4 transition-all hover:border-[#8ff5ff]/20`}
+                >
+                  {/* icon */}
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-[#171a1f]">
+                    <span
+                      className="material-symbols-outlined text-[20px]"
+                      style={{
+                        color:
+                          difficultyColor[scenario.difficulty] ?? "#8ff5ff",
+                      }}
+                    >
+                      {scenarioIcon(scenario.scenario_type)}
+                    </span>
+                  </div>
+
+                  {/* info */}
+                  <div className="flex-1 min-w-0">
+                    <p className="font-headline font-semibold text-sm text-[#f6f6fc] truncate">
+                      {scenario.title}
+                    </p>
+                    <div className="mt-2 flex items-center gap-3">
+                      {/* difficulty badge */}
+                      <span
+                        className="text-[10px] font-mono uppercase tracking-[0.2em] rounded px-2 py-0.5"
+                        style={{
+                          color:
+                            difficultyColor[scenario.difficulty] ?? "#8ff5ff",
+                          backgroundColor:
+                            difficultyBg[scenario.difficulty] ??
+                            "rgba(143,245,255,0.10)",
+                        }}
+                      >
+                        {scenario.difficulty}
+                      </span>
+
+                      {/* segmented progress bar */}
+                      <div className="flex gap-1">
+                        {Array.from({ length: segmentCount }).map((_, i) => (
+                          <div
+                            key={i}
+                            className="h-1.5 w-5 rounded-full transition-colors"
+                            style={{
+                              backgroundColor:
+                                i < filledSegments
+                                  ? difficultyColor[scenario.difficulty] ??
+                                    "#8ff5ff"
+                                  : "#23262c",
+                            }}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* action */}
+                  <Link
+                    href={`/scenarios/${scenario.id}`}
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-[#171a1f] text-[#aaabb0] transition-all hover:bg-[#1d2025] hover:text-[#8ff5ff]"
+                    aria-label={isCompleted ? "Replay scenario" : "Start scenario"}
+                  >
+                    <span className="material-symbols-outlined text-[18px]">
+                      {isCompleted ? "replay" : "play_arrow"}
+                    </span>
+                  </Link>
                 </div>
-                <span className="rounded-full border border-zinc-800 px-2.5 py-0.5 text-xs text-zinc-500">
-                  {card.stat}
+              );
+            })}
+
+            {scenarios.length === 0 && (
+              <div className="bg-[#111318] rounded-lg border border-[#23262c]/50 p-8 text-center">
+                <p className="text-[#aaabb0] text-sm">
+                  No active operations available.
+                </p>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Operator Profiling – 1/3 width */}
+        <section>
+          <h2 className="font-headline font-bold text-lg text-[#f6f6fc] mb-5">
+            Operator Profiling
+          </h2>
+
+          <div className="bg-[#111318] rounded-lg border border-[#23262c]/50 p-6 flex flex-col gap-6">
+            {difficultyStats.map(({ level, total, done, pct }) => (
+              <div key={level}>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#aaabb0]">
+                    {level}
+                  </span>
+                  <span
+                    className="text-xs font-mono font-semibold"
+                    style={{ color: difficultyColor[level] }}
+                  >
+                    {done}/{total}
+                  </span>
+                </div>
+                <div className="h-2 w-full rounded-full bg-[#1d2025] overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-500"
+                    style={{
+                      width: `${pct}%`,
+                      backgroundColor: difficultyColor[level],
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
+
+            {/* overall summary */}
+            <div className="pt-4 border-t border-[#23262c]/50">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#aaabb0]">
+                  Overall Clearance
+                </span>
+                <span className="text-sm font-headline font-bold text-[#8ff5ff]">
+                  {completionPct}%
                 </span>
               </div>
-              <h3 className="font-semibold text-zinc-200 group-hover:text-cyan-400 transition-colors">
-                {card.title}
-              </h3>
-              <p className="mt-1 text-sm text-zinc-500">
-                {card.desc}
-              </p>
-            </Link>
-          ))}
-        </div>
-      </main>
-    </div>
+              <div className="mt-2 h-2 w-full rounded-full bg-[#1d2025] overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-[#8ff5ff] transition-all duration-500"
+                  style={{ width: `${completionPct}%` }}
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </AppShell>
   );
 }
