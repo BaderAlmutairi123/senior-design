@@ -8,11 +8,11 @@ interface FeedbackFormProps {
 }
 
 const categories = [
-  { value: "general", label: "General Feedback" },
-  { value: "scenario_content", label: "Scenario Content" },
-  { value: "ui_experience", label: "UI / Experience" },
-  { value: "difficulty", label: "Difficulty Level" },
-  { value: "suggestion", label: "Suggestion" },
+  { value: "general", label: "General", icon: "chat" },
+  { value: "scenario_content", label: "Scenario Content", icon: "description" },
+  { value: "ui_experience", label: "UI / UX", icon: "brush" },
+  { value: "difficulty", label: "Difficulty", icon: "speed" },
+  { value: "suggestion", label: "Suggestion", icon: "lightbulb" },
 ];
 
 export default function FeedbackForm({ scenarios }: FeedbackFormProps) {
@@ -56,15 +56,13 @@ export default function FeedbackForm({ scenarios }: FeedbackFormProps) {
 
   if (submitted) {
     return (
-      <div className="glass rounded-2xl p-8 text-center">
-        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/10">
-          <svg className="h-8 w-8 text-emerald-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-          </svg>
+      <div className="bg-[#111318] border border-[#23262c] p-8 text-center">
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center bg-[#a2f31f]/10 border border-[#a2f31f]/30">
+          <span className="material-symbols-outlined text-[#a2f31f] text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
         </div>
-        <h2 className="text-xl font-bold text-zinc-100">Thank You!</h2>
-        <p className="mt-2 text-zinc-400">
-          Your feedback has been submitted successfully. We appreciate your input in improving CyberDrill.
+        <h2 className="text-xl font-headline font-bold text-[#f6f6fc]">Transmission Received</h2>
+        <p className="mt-2 text-[#aaabb0] text-sm">
+          Your feedback has been logged to the system. Thank you for contributing to the improvement of CyberDrill.
         </p>
         <button
           type="button"
@@ -75,7 +73,7 @@ export default function FeedbackForm({ scenarios }: FeedbackFormProps) {
             setScenarioId("");
             setMessage("");
           }}
-          className="mt-6 rounded-xl border border-zinc-800 px-6 py-3 text-sm font-medium text-zinc-400 transition-all hover:border-zinc-600 hover:text-zinc-200"
+          className="mt-6 px-6 py-3 bg-[#1d2025] border border-[#23262c] text-[#aaabb0] font-headline text-xs uppercase tracking-widest hover:border-[#8ff5ff]/30 hover:text-[#f6f6fc] transition-all"
         >
           Submit More Feedback
         </button>
@@ -84,13 +82,13 @@ export default function FeedbackForm({ scenarios }: FeedbackFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="glass rounded-2xl p-8">
+    <form onSubmit={handleSubmit} className="bg-[#111318] border border-[#23262c] overflow-hidden">
       {/* Rating */}
-      <div className="mb-8">
-        <label className="mb-3 block text-sm font-medium text-zinc-300">
-          How would you rate your experience?
+      <div className="p-6 border-b border-[#23262c]">
+        <label className="block text-[10px] font-mono uppercase tracking-widest text-[#8ff5ff] mb-4">
+          Operator Rating
         </label>
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           {[1, 2, 3, 4, 5].map((star) => (
             <button
               key={star}
@@ -100,40 +98,27 @@ export default function FeedbackForm({ scenarios }: FeedbackFormProps) {
               onClick={() => setRating(star)}
               className="transition-transform hover:scale-110"
             >
-              <svg
-                className={`h-10 w-10 transition-colors ${
-                  star <= (hoverRating || rating)
-                    ? "text-amber-400"
-                    : "text-zinc-700"
+              <span
+                className={`material-symbols-outlined text-3xl transition-colors ${
+                  star <= (hoverRating || rating) ? "text-[#a2f31f]" : "text-[#23262c]"
                 }`}
-                fill={star <= (hoverRating || rating) ? "currentColor" : "none"}
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
+                style={{ fontVariationSettings: star <= (hoverRating || rating) ? "'FILL' 1" : "'FILL' 0" }}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
-                />
-              </svg>
+                star
+              </span>
             </button>
           ))}
         </div>
         {rating > 0 && (
-          <p className="mt-2 text-xs text-zinc-500">
-            {rating === 1 && "Poor"}
-            {rating === 2 && "Fair"}
-            {rating === 3 && "Good"}
-            {rating === 4 && "Very Good"}
-            {rating === 5 && "Excellent"}
+          <p className="mt-2 text-xs font-mono text-[#aaabb0]">
+            {["", "POOR", "FAIR", "GOOD", "VERY_GOOD", "EXCELLENT"][rating]}
           </p>
         )}
       </div>
 
       {/* Category */}
-      <div className="mb-6">
-        <label className="mb-2 block text-sm font-medium text-zinc-300">
+      <div className="p-6 border-b border-[#23262c]">
+        <label className="block text-[10px] font-mono uppercase tracking-widest text-[#8ff5ff] mb-4">
           Feedback Category
         </label>
         <div className="flex flex-wrap gap-2">
@@ -142,64 +127,68 @@ export default function FeedbackForm({ scenarios }: FeedbackFormProps) {
               key={cat.value}
               type="button"
               onClick={() => setCategory(cat.value)}
-              className={`rounded-full border px-4 py-2 text-sm transition-all ${
+              className={`flex items-center gap-2 px-4 py-2 text-xs font-headline uppercase tracking-widest border transition-all ${
                 category === cat.value
-                  ? "border-cyan-500/40 bg-cyan-500/10 text-cyan-300"
-                  : "border-zinc-800 bg-zinc-900/30 text-zinc-500 hover:border-zinc-700 hover:text-zinc-400"
+                  ? "border-[#8ff5ff]/40 bg-[#8ff5ff]/10 text-[#8ff5ff]"
+                  : "border-[#23262c] bg-[#0c0e12] text-[#aaabb0] hover:border-[#46484d] hover:text-[#f6f6fc]"
               }`}
             >
+              <span className="material-symbols-outlined text-sm">{cat.icon}</span>
               {cat.label}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Scenario selector (optional) */}
-      <div className="mb-6">
-        <label className="mb-2 block text-sm font-medium text-zinc-300">
-          Related Scenario <span className="text-zinc-600">(optional)</span>
+      {/* Scenario selector */}
+      <div className="p-6 border-b border-[#23262c]">
+        <label className="block text-[10px] font-mono uppercase tracking-widest text-[#8ff5ff] mb-3">
+          Related Scenario <span className="text-[#46484d]">(optional)</span>
         </label>
         <select
           value={scenarioId}
           onChange={(e) => setScenarioId(e.target.value)}
-          className="w-full rounded-xl border border-zinc-800 bg-zinc-900/50 px-4 py-3 text-sm text-zinc-300 outline-none transition-colors focus:border-cyan-500/40 focus:ring-1 focus:ring-cyan-500/20"
+          className="w-full bg-[#0c0e12] border border-[#23262c] px-4 py-3 text-sm text-[#f6f6fc] outline-none focus:border-[#8ff5ff]/40 focus:ring-0"
         >
           <option value="">No specific scenario</option>
           {scenarios.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.title}
-            </option>
+            <option key={s.id} value={s.id}>{s.title}</option>
           ))}
         </select>
       </div>
 
       {/* Message */}
-      <div className="mb-8">
-        <label className="mb-2 block text-sm font-medium text-zinc-300">
-          Your Feedback
+      <div className="p-6 border-b border-[#23262c]">
+        <label className="block text-[10px] font-mono uppercase tracking-widest text-[#8ff5ff] mb-3">
+          Feedback Message
         </label>
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          placeholder="Tell us what you think, what could be improved, or any suggestions you have..."
+          placeholder="Enter your operational feedback, suggestions, or observations..."
           rows={5}
-          className="w-full resize-none rounded-xl border border-zinc-800 bg-zinc-900/50 px-4 py-3 text-sm text-zinc-300 placeholder-zinc-600 outline-none transition-colors focus:border-cyan-500/40 focus:ring-1 focus:ring-cyan-500/20"
+          className="w-full resize-none bg-[#0c0e12] border border-[#23262c] px-4 py-3 text-sm text-[#f6f6fc] placeholder-[#46484d] outline-none focus:border-[#8ff5ff]/40 focus:ring-0"
         />
       </div>
 
       {error && (
-        <div className="mb-4 rounded-xl border border-red-500/20 bg-red-500/5 p-3">
-          <p className="text-sm text-red-400">{error}</p>
+        <div className="mx-6 mt-4 p-3 bg-[#ff716c]/10 border border-[#ff716c]/20">
+          <p className="text-sm text-[#ff716c] flex items-center gap-2">
+            <span className="material-symbols-outlined text-sm">error</span>
+            {error}
+          </p>
         </div>
       )}
 
-      <button
-        type="submit"
-        disabled={submitting}
-        className="w-full rounded-xl bg-gradient-to-r from-cyan-500 to-violet-500 px-8 py-3 text-sm font-semibold text-white transition-opacity disabled:opacity-40"
-      >
-        {submitting ? "Submitting..." : "Submit Feedback"}
-      </button>
+      <div className="p-6">
+        <button
+          type="submit"
+          disabled={submitting}
+          className="w-full py-3 bg-[#a2f31f] text-[#294300] font-headline font-bold text-xs uppercase tracking-widest transition-all disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-[0_0_20px_rgba(162,243,31,0.3)] active:scale-[0.98]"
+        >
+          {submitting ? "Transmitting..." : "Submit Feedback"}
+        </button>
+      </div>
     </form>
   );
 }
