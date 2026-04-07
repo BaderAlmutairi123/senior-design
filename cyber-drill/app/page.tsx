@@ -76,7 +76,7 @@ function ProgressRing({
         cy={size / 2}
         r={radius}
         fill="none"
-        stroke="#23262c"
+        stroke="var(--cd-surface-container-highest)"
         strokeWidth={strokeWidth}
       />
       {/* filled arc */}
@@ -85,7 +85,7 @@ function ProgressRing({
         cy={size / 2}
         r={radius}
         fill="none"
-        stroke="#8ff5ff"
+        stroke="var(--cd-primary)"
         strokeWidth={strokeWidth}
         strokeLinecap="round"
         strokeDasharray={circumference}
@@ -99,7 +99,7 @@ function ProgressRing({
         y="46%"
         dominantBaseline="middle"
         textAnchor="middle"
-        className="fill-[#f6f6fc] font-headline text-3xl font-bold"
+        className="fill-[var(--cd-on-surface)] font-headline text-3xl font-bold"
         style={{ fontSize: 32 }}
       >
         {percent}%
@@ -109,7 +109,7 @@ function ProgressRing({
         y="62%"
         dominantBaseline="middle"
         textAnchor="middle"
-        className="fill-[#aaabb0] font-mono uppercase"
+        className="fill-[var(--cd-on-surface-variant)] font-mono uppercase"
         style={{ fontSize: 9, letterSpacing: "0.2em" }}
       >
         Complete
@@ -160,15 +160,15 @@ export default async function Home() {
       <section className="flex flex-col lg:flex-row items-center justify-between gap-10 mb-12">
         {/* left */}
         <div className="max-w-xl">
-          <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#8ff5ff] mb-3">
+          <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-[var(--cd-primary)] mb-3">
             Dashboard
           </p>
-          <h1 className="font-headline font-bold text-4xl text-[#f6f6fc] leading-tight">
+          <h1 className="font-headline font-bold text-4xl text-[var(--cd-on-surface)] leading-tight">
             Welcome back.
           </h1>
-          <p className="mt-3 text-[#aaabb0] text-base leading-relaxed">
+          <p className="mt-3 text-[var(--cd-on-surface-variant)] text-base leading-relaxed">
             You are{" "}
-            <span className="text-[#8ff5ff] font-semibold">{completionPct}%</span>{" "}
+            <span className="text-[var(--cd-primary)] font-semibold">{completionPct}%</span>{" "}
             through your training scenarios.
           </p>
 
@@ -184,7 +184,7 @@ export default async function Home() {
             </Link>
             <Link
               href="/progress"
-              className="inline-flex items-center gap-2 rounded-md border border-[#23262c] px-6 py-3 text-sm font-bold uppercase tracking-wider text-[#aaabb0] transition-all hover:border-[#8ff5ff]/40 hover:text-[#f6f6fc]"
+              className="inline-flex items-center gap-2 rounded-md border border-[var(--cd-surface-container-highest)] px-6 py-3 text-sm font-bold uppercase tracking-wider text-[var(--cd-on-surface-variant)] transition-all hover:border-[var(--cd-primary)]/40 hover:text-[var(--cd-on-surface)]"
             >
               <span className="material-symbols-outlined text-[18px]">
                 bar_chart
@@ -224,13 +224,13 @@ export default async function Home() {
           {
             label: "Achievement Rate",
             value: `${completionPct}%`,
-            icon: "military_tech",
+            icon: "emoji_events",
             color: "#8ff5ff",
           },
         ].map((card) => (
           <div
             key={card.label}
-            className="bg-[#111318] p-6 rounded-lg border border-[#23262c]/50 transition-all hover:border-[#8ff5ff]/20"
+            className="bg-[var(--cd-surface-container-low)] p-6 rounded-lg border border-[var(--cd-surface-container-highest)]/50 transition-all hover:border-[var(--cd-primary)]/20"
           >
             <div className="flex items-center gap-3 mb-3">
               <span
@@ -239,11 +239,11 @@ export default async function Home() {
               >
                 {card.icon}
               </span>
-              <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#aaabb0]">
+              <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[var(--cd-on-surface-variant)]">
                 {card.label}
               </span>
             </div>
-            <p className="font-headline font-bold text-2xl text-[#f6f6fc]">
+            <p className="font-headline font-bold text-2xl text-[var(--cd-on-surface)]">
               {card.value}
             </p>
           </div>
@@ -255,12 +255,12 @@ export default async function Home() {
         {/* Active Operations – 2/3 width */}
         <section className="lg:col-span-2">
           <div className="flex items-center justify-between mb-5">
-            <h2 className="font-headline font-bold text-lg text-[#f6f6fc]">
+            <h2 className="font-headline font-bold text-lg text-[var(--cd-on-surface)]">
               Recent Scenarios
             </h2>
             <Link
               href="/scenarios"
-              className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#8ff5ff] hover:text-[#8ff5ff]/70 transition-colors"
+              className="text-[10px] font-mono uppercase tracking-[0.2em] text-[var(--cd-primary)] hover:text-[var(--cd-primary)]/70 transition-colors"
             >
               View All
             </Link>
@@ -288,12 +288,12 @@ export default async function Home() {
               return (
                 <div
                   key={scenario.id}
-                  className={`bg-[#111318] rounded-lg border border-[#23262c]/50 border-l-2 ${
+                  className={`bg-[var(--cd-surface-container-low)] rounded-lg border border-[var(--cd-surface-container-highest)]/50 border-l-2 ${
                     difficultyBorder[scenario.difficulty] ?? "border-l-[#8ff5ff]"
-                  } p-4 flex items-center gap-4 transition-all hover:border-[#8ff5ff]/20`}
+                  } p-4 flex items-center gap-4 transition-all hover:border-[var(--cd-primary)]/20`}
                 >
                   {/* icon */}
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-[#171a1f]">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-[var(--cd-surface-container)]">
                     <span
                       className="material-symbols-outlined text-[20px]"
                       style={{
@@ -307,7 +307,7 @@ export default async function Home() {
 
                   {/* info */}
                   <div className="flex-1 min-w-0">
-                    <p className="font-headline font-semibold text-sm text-[#f6f6fc] truncate">
+                    <p className="font-headline font-semibold text-sm text-[var(--cd-on-surface)] truncate">
                       {scenario.title}
                     </p>
                     <div className="mt-2 flex items-center gap-3">
@@ -347,7 +347,7 @@ export default async function Home() {
                   {/* action */}
                   <Link
                     href={`/scenarios/${scenario.id}`}
-                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-[#171a1f] text-[#aaabb0] transition-all hover:bg-[#1d2025] hover:text-[#8ff5ff]"
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-[var(--cd-surface-container)] text-[var(--cd-on-surface-variant)] transition-all hover:bg-[var(--cd-surface-container-high)] hover:text-[var(--cd-primary)]"
                     aria-label={isCompleted ? "Replay scenario" : "Start scenario"}
                   >
                     <span className="material-symbols-outlined text-[18px]">
@@ -359,8 +359,8 @@ export default async function Home() {
             })}
 
             {scenarios.length === 0 && (
-              <div className="bg-[#111318] rounded-lg border border-[#23262c]/50 p-8 text-center">
-                <p className="text-[#aaabb0] text-sm">
+              <div className="bg-[var(--cd-surface-container-low)] rounded-lg border border-[var(--cd-surface-container-highest)]/50 p-8 text-center">
+                <p className="text-[var(--cd-on-surface-variant)] text-sm">
                   No scenarios available yet.
                 </p>
               </div>
@@ -370,15 +370,15 @@ export default async function Home() {
 
         {/* Operator Profiling – 1/3 width */}
         <section>
-          <h2 className="font-headline font-bold text-lg text-[#f6f6fc] mb-5">
+          <h2 className="font-headline font-bold text-lg text-[var(--cd-on-surface)] mb-5">
             Skill Breakdown
           </h2>
 
-          <div className="bg-[#111318] rounded-lg border border-[#23262c]/50 p-6 flex flex-col gap-6">
+          <div className="bg-[var(--cd-surface-container-low)] rounded-lg border border-[var(--cd-surface-container-highest)]/50 p-6 flex flex-col gap-6">
             {difficultyStats.map(({ level, total, done, pct }) => (
               <div key={level}>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#aaabb0]">
+                  <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[var(--cd-on-surface-variant)]">
                     {level}
                   </span>
                   <span
@@ -388,7 +388,7 @@ export default async function Home() {
                     {done}/{total}
                   </span>
                 </div>
-                <div className="h-2 w-full rounded-full bg-[#1d2025] overflow-hidden">
+                <div className="h-2 w-full rounded-full bg-[var(--cd-surface-container-high)] overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all duration-500"
                     style={{
@@ -401,18 +401,18 @@ export default async function Home() {
             ))}
 
             {/* overall summary */}
-            <div className="pt-4 border-t border-[#23262c]/50">
+            <div className="pt-4 border-t border-[var(--cd-surface-container-highest)]/50">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#aaabb0]">
+                <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[var(--cd-on-surface-variant)]">
                   Overall Progress
                 </span>
-                <span className="text-sm font-headline font-bold text-[#8ff5ff]">
+                <span className="text-sm font-headline font-bold text-[var(--cd-primary)]">
                   {completionPct}%
                 </span>
               </div>
-              <div className="mt-2 h-2 w-full rounded-full bg-[#1d2025] overflow-hidden">
+              <div className="mt-2 h-2 w-full rounded-full bg-[var(--cd-surface-container-high)] overflow-hidden">
                 <div
-                  className="h-full rounded-full bg-[#8ff5ff] transition-all duration-500"
+                  className="h-full rounded-full bg-[var(--cd-primary)] transition-all duration-500"
                   style={{ width: `${completionPct}%` }}
                 />
               </div>

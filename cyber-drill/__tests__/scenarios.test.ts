@@ -106,11 +106,11 @@ describe("TC-4: Scenario Data Validation", () => {
 
     it("contains the expected scenario titles", () => {
       expect(batch3File).toContain("Phishing Link Analysis");
-      expect(batch3File).toContain("Ransomware Attack Response");
+      expect(batch3File).toContain("Quid Pro Quo Attack");
       expect(batch3File).toContain("Social Media Phishing and Impersonation");
-      expect(batch3File).toContain("Credential Stuffing and Password Attacks");
+      expect(batch3File).toContain("Shoulder Surfing and Eavesdropping");
       expect(batch3File).toContain("Insider Threat Detection");
-      expect(batch3File).toContain("Secure Wi-Fi and Network Awareness");
+      expect(batch3File).toContain("Evil Twin Wi-Fi Attack");
     });
   });
 

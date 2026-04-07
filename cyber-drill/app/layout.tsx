@@ -23,7 +23,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
         />
       </head>
-      <body className="antialiased bg-[#0c0e12] text-[#f6f6fc] selection:bg-[#8ff5ff]/30">
+      <body className="antialiased bg-[var(--cd-surface)] text-[var(--cd-on-surface)] selection:bg-[var(--cd-primary)]/30">
         {children}
       </body>
     </html>

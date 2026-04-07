@@ -15,20 +15,20 @@ const navItems = [
 
 export default function Sidebar({ activePath }: SidebarProps) {
   return (
-    <aside className="fixed left-0 top-16 w-64 h-[calc(100vh-4rem)] bg-[#0c0e12] border-r border-[#8ff5ff]/10 flex flex-col">
+    <aside className="fixed left-0 top-16 w-64 h-[calc(100vh-4rem)] bg-[var(--cd-surface)] border-r border-[var(--cd-primary)]/10 flex flex-col">
       {/* User identity */}
-      <div className="px-6 py-6 border-b border-[#8ff5ff]/10">
+      <div className="px-6 py-6 border-b border-[var(--cd-primary)]/10">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-[#8ff5ff]/10 flex items-center justify-center clip-hex">
-            <span className="material-symbols-outlined text-[#8ff5ff] text-xl">
+          <div className="w-10 h-10 bg-[var(--cd-primary)]/10 flex items-center justify-center clip-hex">
+            <span className="material-symbols-outlined text-[var(--cd-primary)] text-xl">
               shield
             </span>
           </div>
           <div>
-            <p className="text-sm font-headline uppercase tracking-widest text-[#e0e1e3]">
+            <p className="text-sm font-headline uppercase tracking-widest text-[var(--cd-on-surface)]">
               CyberDrill
             </p>
-            <p className="text-xs text-[#aaabb0]">Trainee</p>
+            <p className="text-xs text-[var(--cd-on-surface-variant)]">Trainee</p>
           </div>
         </div>
       </div>
@@ -44,8 +44,8 @@ export default function Sidebar({ activePath }: SidebarProps) {
                   href={item.href}
                   className={`flex items-center gap-3 px-6 py-2.5 text-xs font-headline uppercase tracking-widest transition-colors ${
                     isActive
-                      ? "text-[#a2f31f] border-l-4 border-[#a2f31f] bg-gradient-to-r from-[#a2f31f]/10 to-transparent pl-5"
-                      : "text-[#aaabb0] hover:bg-[#1d2025] hover:text-[#8ff5ff]"
+                      ? "text-[var(--cd-secondary)] border-l-4 border-[var(--cd-secondary)] bg-[var(--cd-secondary)]/10 pl-5"
+                      : "text-[var(--cd-on-surface-variant)] hover:bg-[var(--cd-surface-container-high)] hover:text-[var(--cd-primary)]"
                   }`}
                 >
                   <span className="material-symbols-outlined text-xl">
@@ -59,11 +59,11 @@ export default function Sidebar({ activePath }: SidebarProps) {
         </ul>
       </nav>
 
-      {/* Initiate drill button */}
+      {/* Start drill button */}
       <div className="p-4">
         <Link
           href="/scenarios"
-          className="block w-full text-center py-3 bg-[#426900] text-[#a2f31f] font-headline uppercase tracking-widest text-xs rounded hover:bg-[#4d7a00] transition-colors"
+          className="block w-full text-center py-3 bg-[var(--cd-secondary)]/15 text-[var(--cd-secondary)] font-headline uppercase tracking-widest text-xs rounded hover:bg-[var(--cd-secondary)]/25 transition-colors"
         >
           Start Drill
         </Link>

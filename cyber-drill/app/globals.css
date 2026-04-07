@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
-:root {
-  /* CyberDrill color tokens */
+/* Dark mode (default) */
+:root, .dark {
   --cd-primary: #8ff5ff;
   --cd-primary-dim: #00deec;
   --cd-secondary: #a2f31f;
@@ -17,6 +17,25 @@
   --cd-on-surface-variant: #aaabb0;
   --cd-outline: #74757a;
   --cd-outline-variant: #46484d;
+}
+
+/* Light mode */
+.light {
+  --cd-primary: #006d75;
+  --cd-primary-dim: #004f56;
+  --cd-secondary: #3a6b00;
+  --cd-tertiary: #8a2fc6;
+  --cd-error: #d93025;
+  --cd-surface: #f8f9fc;
+  --cd-surface-container: #eef0f4;
+  --cd-surface-container-low: #f2f4f8;
+  --cd-surface-container-high: #e6e8ec;
+  --cd-surface-container-highest: #dddfe3;
+  --cd-surface-container-lowest: #ffffff;
+  --cd-on-surface: #1a1c20;
+  --cd-on-surface-variant: #44474d;
+  --cd-outline: #74777e;
+  --cd-outline-variant: #c4c6cd;
 }
 
 @theme inline {
