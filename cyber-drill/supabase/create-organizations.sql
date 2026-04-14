@@ -67,32 +67,14 @@ CREATE POLICY "Members can read their organizations"
 DROP POLICY IF EXISTS "Platform admins can read all organizations" ON organizations;
 CREATE POLICY "Platform admins can read all organizations"
   ON organizations FOR SELECT
-  USING (
-    EXISTS (
-      SELECT 1 FROM user_roles
-      WHERE user_roles.user_id = auth.uid()
-        AND user_roles.role = 'admin'
-    )
-  );
+  USING (public.is_platform_admin(auth.uid()));
 
 -- Organizations: platform admins can manage all.
 DROP POLICY IF EXISTS "Platform admins can manage organizations" ON organizations;
 CREATE POLICY "Platform admins can manage organizations"
   ON organizations FOR ALL
-  USING (
-    EXISTS (
-      SELECT 1 FROM user_roles
-      WHERE user_roles.user_id = auth.uid()
-        AND user_roles.role = 'admin'
-    )
-  )
-  WITH CHECK (
-    EXISTS (
-      SELECT 1 FROM user_roles
-      WHERE user_roles.user_id = auth.uid()
-        AND user_roles.role = 'admin'
-    )
-  );
+  USING (public.is_platform_admin(auth.uid()))
+  WITH CHECK (public.is_platform_admin(auth.uid()));
 
 -- Organizations: org owners/admins can update their org.
 DROP POLICY IF EXISTS "Org owners and admins can update their org" ON organizations;
@@ -158,28 +140,10 @@ CREATE POLICY "Org owners and admins can manage memberships"
 DROP POLICY IF EXISTS "Platform admins can read all memberships" ON user_organizations;
 CREATE POLICY "Platform admins can read all memberships"
   ON user_organizations FOR SELECT
-  USING (
-    EXISTS (
-      SELECT 1 FROM user_roles
-      WHERE user_roles.user_id = auth.uid()
-        AND user_roles.role = 'admin'
-    )
-  );
+  USING (public.is_platform_admin(auth.uid()));
 
 DROP POLICY IF EXISTS "Platform admins can manage all memberships" ON user_organizations;
 CREATE POLICY "Platform admins can manage all memberships"
   ON user_organizations FOR ALL
-  USING (
-    EXISTS (
-      SELECT 1 FROM user_roles
-      WHERE user_roles.user_id = auth.uid()
-        AND user_roles.role = 'admin'
-    )
-  )
-  WITH CHECK (
-    EXISTS (
-      SELECT 1 FROM user_roles
-      WHERE user_roles.user_id = auth.uid()
-        AND user_roles.role = 'admin'
-    )
-  );
+  USING (public.is_platform_admin(auth.uid()))
+  WITH CHECK (public.is_platform_admin(auth.uid()));

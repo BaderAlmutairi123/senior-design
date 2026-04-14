@@ -14,34 +14,46 @@ CREATE TABLE IF NOT EXISTS user_roles (
 -- 2. Enable RLS
 ALTER TABLE user_roles ENABLE ROW LEVEL SECURITY;
 
--- 3. RLS Policies
+-- 3. SECURITY DEFINER helper so RLS policies that need to check admin status
+--    can do so without recursing back into user_roles' own policies.
+CREATE OR REPLACE FUNCTION public.is_platform_admin(uid UUID)
+RETURNS BOOLEAN
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = public
+STABLE
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.user_roles
+    WHERE user_id = uid AND role = 'admin'
+  );
+$$;
+
+REVOKE ALL ON FUNCTION public.is_platform_admin(UUID) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.is_platform_admin(UUID) TO authenticated, anon, service_role;
+
+-- 4. RLS Policies
 
 -- Users can read their own role
+DROP POLICY IF EXISTS "Users can read own role" ON user_roles;
 CREATE POLICY "Users can read own role"
   ON user_roles FOR SELECT
   USING (auth.uid() = user_id);
 
--- Admins can read all roles
+-- Admins can read all roles (uses SECURITY DEFINER helper → no recursion)
+DROP POLICY IF EXISTS "Admins can read all roles" ON user_roles;
 CREATE POLICY "Admins can read all roles"
   ON user_roles FOR SELECT
-  USING (
-    EXISTS (
-      SELECT 1 FROM user_roles ur
-      WHERE ur.user_id = auth.uid() AND ur.role = 'admin'
-    )
-  );
+  USING (public.is_platform_admin(auth.uid()));
 
 -- Admins can insert/update/delete roles
+DROP POLICY IF EXISTS "Admins can manage roles" ON user_roles;
 CREATE POLICY "Admins can manage roles"
   ON user_roles FOR ALL
-  USING (
-    EXISTS (
-      SELECT 1 FROM user_roles ur
-      WHERE ur.user_id = auth.uid() AND ur.role = 'admin'
-    )
-  );
+  USING (public.is_platform_admin(auth.uid()))
+  WITH CHECK (public.is_platform_admin(auth.uid()));
 
--- 4. Auto-assign 'user' role on signup
+-- 5. Auto-assign 'user' role on signup
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -58,11 +70,11 @@ CREATE TRIGGER on_auth_user_created
   FOR EACH ROW
   EXECUTE FUNCTION public.handle_new_user();
 
--- 5. Backfill: assign 'user' role to any existing users who don't have one
+-- 6. Backfill: assign 'user' role to any existing users who don't have one
 INSERT INTO user_roles (user_id, role)
 SELECT id, 'user' FROM auth.users
 WHERE id NOT IN (SELECT user_id FROM user_roles)
 ON CONFLICT (user_id) DO NOTHING;
 
--- 6. To promote a user to admin, run:
+-- 7. To promote a user to admin, run:
 -- UPDATE user_roles SET role = 'admin' WHERE user_id = '<USER_UUID>';
