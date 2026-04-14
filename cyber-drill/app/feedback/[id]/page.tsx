@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect, notFound } from "next/navigation";
 import { getScenarioById, getUserProgress } from "@/lib/scenarios/queries";
+import { isAdmin } from "@/lib/auth/roles";
 import Link from "next/link";
 import AppShell from "@/components/layout/AppShell";
 import type { QuizQuestion } from "@/types/scenario";
@@ -32,7 +33,10 @@ export default async function FeedbackPage({
     notFound();
   }
 
-  const progress = await getUserProgress(user.id, scenario.id);
+  const [progress, userIsAdmin] = await Promise.all([
+    getUserProgress(user.id, scenario.id),
+    isAdmin(user.id),
+  ]);
 
   if (!progress) {
     redirect(`/scenarios/${id}`);
@@ -62,7 +66,7 @@ export default async function FeedbackPage({
   }
 
   return (
-    <AppShell email={user.email || ""} activePath="/scenarios">
+    <AppShell email={user.email || ""} activePath="/scenarios" isAdmin={userIsAdmin}>
       {/* Header */}
       <div className="mb-8">
         <Link

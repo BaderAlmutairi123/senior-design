@@ -2,6 +2,7 @@ import Link from "next/link";
 
 interface SidebarProps {
   activePath: string;
+  isAdmin?: boolean;
 }
 
 const navItems = [
@@ -13,7 +14,7 @@ const navItems = [
   { label: "Settings", icon: "settings", href: "#" },
 ];
 
-export default function Sidebar({ activePath }: SidebarProps) {
+export default function Sidebar({ activePath, isAdmin = false }: SidebarProps) {
   return (
     <aside className="fixed left-0 top-16 w-64 h-[calc(100vh-4rem)] bg-[var(--cd-surface)] border-r border-[var(--cd-primary)]/10 flex flex-col">
       {/* User identity */}
@@ -59,8 +60,17 @@ export default function Sidebar({ activePath }: SidebarProps) {
         </ul>
       </nav>
 
-      {/* Start drill button */}
-      <div className="p-4">
+      {/* Bottom actions */}
+      <div className="p-4 space-y-2">
+        {isAdmin && (
+          <Link
+            href="/admin"
+            className="flex items-center justify-center gap-2 w-full py-3 bg-[var(--cd-tertiary)]/10 text-[var(--cd-tertiary)] font-headline uppercase tracking-widest text-xs rounded hover:bg-[var(--cd-tertiary)]/20 transition-colors"
+          >
+            <span className="material-symbols-outlined text-sm">admin_panel_settings</span>
+            Admin Panel
+          </Link>
+        )}
         <Link
           href="/scenarios"
           className="block w-full text-center py-3 bg-[var(--cd-secondary)]/15 text-[var(--cd-secondary)] font-headline uppercase tracking-widest text-xs rounded hover:bg-[var(--cd-secondary)]/25 transition-colors"

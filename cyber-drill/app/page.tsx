@@ -5,6 +5,7 @@ import {
   getScenarios,
   getAllUserProgress,
 } from "@/lib/scenarios/queries";
+import { isAdmin } from "@/lib/auth/roles";
 import Link from "next/link";
 import AppShell from "@/components/layout/AppShell";
 import type { Scenario, UserProgress } from "@/types/scenario";
@@ -130,10 +131,11 @@ export default async function Home() {
     redirect("/login");
   }
 
-  const [stats, scenarios, progressList] = await Promise.all([
+  const [stats, scenarios, progressList, userIsAdmin] = await Promise.all([
     getUserStats(user.id),
     getScenarios(),
     getAllUserProgress(user.id),
+    isAdmin(user.id),
   ]);
 
   const { totalScenarios, completed, totalPoints } = stats;
@@ -155,7 +157,7 @@ export default async function Home() {
   );
 
   return (
-    <AppShell email={user.email ?? ""} activePath="/">
+    <AppShell email={user.email ?? ""} activePath="/" isAdmin={userIsAdmin}>
       {/* ── Hero ─────────────────────────────────────────────── */}
       <section className="flex flex-col lg:flex-row items-center justify-between gap-10 mb-12">
         {/* left */}

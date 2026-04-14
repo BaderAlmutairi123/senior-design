@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { getScenarios } from "@/lib/scenarios/queries";
+import { isAdmin } from "@/lib/auth/roles";
 import AppShell from "@/components/layout/AppShell";
 import FeedbackForm from "./FeedbackForm";
 
@@ -14,11 +15,14 @@ export default async function FeedbackSubmitPage() {
     redirect("/login");
   }
 
-  const scenarios = await getScenarios();
+  const [scenarios, userIsAdmin] = await Promise.all([
+    getScenarios(),
+    isAdmin(user.id),
+  ]);
   const scenarioOptions = scenarios.map((s) => ({ id: s.id, title: s.title }));
 
   return (
-    <AppShell email={user.email || ""} activePath="/feedback/submit">
+    <AppShell email={user.email || ""} activePath="/feedback/submit" isAdmin={userIsAdmin}>
       {/* Page Header */}
       <div className="mb-10">
         <h1 className="font-headline font-bold text-4xl tracking-tighter text-[#f6f6fc]">

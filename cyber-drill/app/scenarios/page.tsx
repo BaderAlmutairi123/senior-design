@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { getScenarios, getAllUserProgress } from "@/lib/scenarios/queries";
+import { isAdmin } from "@/lib/auth/roles";
 import Link from "next/link";
 import type { Scenario } from "@/types/scenario";
 import AppShell from "@/components/layout/AppShell";
@@ -48,9 +49,10 @@ export default async function ScenariosPage() {
     redirect("/login");
   }
 
-  const [scenarios, progress] = await Promise.all([
+  const [scenarios, progress, userIsAdmin] = await Promise.all([
     getScenarios(),
     getAllUserProgress(user.id),
+    isAdmin(user.id),
   ]);
 
   // Build a lookup: scenario_id -> UserProgress
@@ -59,7 +61,7 @@ export default async function ScenariosPage() {
   const filterButtons = ["All", "Beginner", "Intermediate", "Advanced"];
 
   return (
-    <AppShell email={user.email ?? ""} activePath="/scenarios">
+    <AppShell email={user.email ?? ""} activePath="/scenarios" isAdmin={userIsAdmin}>
       {/* ── Page header ──────────────────────────────────────────── */}
       <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <div>

@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect, notFound } from "next/navigation";
 import { getScenarioById, getUserProgress } from "@/lib/scenarios/queries";
+import { isAdmin } from "@/lib/auth/roles";
 import Link from "next/link";
 import QuizClient from "./QuizClient";
 import AppShell from "@/components/layout/AppShell";
@@ -58,11 +59,14 @@ export default async function ScenarioViewerPage({
   const correctAnswersData = (
     scenario.correct_answers as { answers: string[] }
   )?.answers || [];
-  const existingProgress = await getUserProgress(user.id, scenario.id);
+  const [existingProgress, userIsAdmin] = await Promise.all([
+    getUserProgress(user.id, scenario.id),
+    isAdmin(user.id),
+  ]);
   const icon = typeIcons[scenario.scenario_type] || "security";
 
   return (
-    <AppShell email={user.email || ""} activePath="/scenarios">
+    <AppShell email={user.email || ""} activePath="/scenarios" isAdmin={userIsAdmin}>
       {/* Header Status HUD */}
       <header className="flex flex-col md:flex-row justify-between items-end mb-10 gap-6">
         <div className="space-y-1">

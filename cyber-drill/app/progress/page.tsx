@@ -5,6 +5,7 @@ import {
   getAllUserProgress,
   getUserStats,
 } from "@/lib/scenarios/queries";
+import { isAdmin } from "@/lib/auth/roles";
 import Link from "next/link";
 import AppShell from "@/components/layout/AppShell";
 import type { Scenario, UserProgress } from "@/types/scenario";
@@ -61,10 +62,11 @@ export default async function ProgressPage() {
     redirect("/login");
   }
 
-  const [scenarios, progressList, stats] = await Promise.all([
+  const [scenarios, progressList, stats, userIsAdmin] = await Promise.all([
     getScenarios(),
     getAllUserProgress(user.id),
     getUserStats(user.id),
+    isAdmin(user.id),
   ]);
 
   const progressMap = new Map<string, UserProgress>();
@@ -155,7 +157,7 @@ export default async function ProgressPage() {
   const trajectoryPath = trajectoryPoints.length > 1 ? `M${trajectoryPoints.join(" L")}` : "";
 
   return (
-    <AppShell email={user.email ?? ""} activePath="/progress">
+    <AppShell email={user.email ?? ""} activePath="/progress" isAdmin={userIsAdmin}>
       {/* Page Header */}
       <div className="mb-8">
         <h1 className="font-headline font-bold text-4xl tracking-tighter text-[var(--cd-on-surface)]">
