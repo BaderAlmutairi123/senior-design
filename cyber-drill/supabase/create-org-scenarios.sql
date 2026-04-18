@@ -72,26 +72,29 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 DECLARE
-  caller UUID := auth.uid();
-  found_id UUID;
+  v_caller UUID;
+  v_found_id UUID;
 BEGIN
-  IF caller IS NULL THEN
+  v_caller := auth.uid();
+
+  IF v_caller IS NULL THEN
     RETURN NULL;
   END IF;
 
   -- Only platform admins or users who own/admin at least one org can use this
   IF NOT (
-    public.is_platform_admin(caller)
+    public.is_platform_admin(v_caller)
     OR EXISTS (
       SELECT 1 FROM public.user_organizations
-      WHERE user_id = caller AND role IN ('owner', 'admin')
+      WHERE user_id = v_caller AND role IN ('owner', 'admin')
     )
   ) THEN
     RETURN NULL;
   END IF;
 
-  SELECT id INTO found_id FROM auth.users WHERE email = lookup_email LIMIT 1;
-  RETURN found_id;
+  -- Move INTO after FROM to avoid ambiguity with PostgreSQL's SELECT INTO DDL
+  SELECT id FROM auth.users WHERE email = lookup_email LIMIT 1 INTO v_found_id;
+  RETURN v_found_id;
 END;
 $$;
 
@@ -106,17 +109,19 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 DECLARE
-  caller UUID := auth.uid();
+  v_caller UUID;
 BEGIN
-  IF caller IS NULL THEN
+  v_caller := auth.uid();
+
+  IF v_caller IS NULL THEN
     RETURN;
   END IF;
 
   IF NOT (
-    public.is_platform_admin(caller)
+    public.is_platform_admin(v_caller)
     OR EXISTS (
       SELECT 1 FROM public.user_organizations
-      WHERE user_id = caller AND role IN ('owner', 'admin')
+      WHERE user_id = v_caller AND role IN ('owner', 'admin')
     )
   ) THEN
     RETURN;
