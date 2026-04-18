@@ -23,11 +23,10 @@ export default async function AdminLayout({
     redirect("/");
   }
 
-  // Determine active path from headers
   return (
     <>
       <TopNav email={user.email ?? ""} />
-      <AdminSidebar activePath="/admin" />
+      <AdminSidebar />
       <main className="ml-64 pt-16 min-h-screen bg-[var(--cd-surface)]">
         <div className="p-8 max-w-7xl mx-auto">{children}</div>
       </main>

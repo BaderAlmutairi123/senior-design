@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { getScenarios, getAllUserProgress } from "@/lib/scenarios/queries";
 import { isAdmin } from "@/lib/auth/roles";
+import { getAssignedScenarioIdsForUser } from "@/lib/organizations/queries";
 import Link from "next/link";
 import type { Scenario } from "@/types/scenario";
 import AppShell from "@/components/layout/AppShell";
@@ -49,14 +50,22 @@ export default async function ScenariosPage() {
     redirect("/login");
   }
 
-  const [scenarios, progress, userIsAdmin] = await Promise.all([
+  const [scenarios, progress, userIsAdmin, assignedIds] = await Promise.all([
     getScenarios(),
     getAllUserProgress(user.id),
     isAdmin(user.id),
+    getAssignedScenarioIdsForUser(user.id),
   ]);
 
   // Build a lookup: scenario_id -> UserProgress
   const progressMap = new Map(progress.map((p) => [p.scenario_id, p]));
+
+  // Sort assigned scenarios first
+  const sortedScenarios = [...scenarios].sort((a, b) => {
+    const aAssigned = assignedIds.has(a.id) ? 1 : 0;
+    const bAssigned = assignedIds.has(b.id) ? 1 : 0;
+    return bAssigned - aAssigned;
+  });
 
   const filterButtons = ["All", "Beginner", "Intermediate", "Advanced"];
 
@@ -105,9 +114,10 @@ export default async function ScenariosPage() {
         </div>
       ) : (
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {scenarios.map((scenario) => {
+          {sortedScenarios.map((scenario) => {
             const icon = typeIcon[scenario.scenario_type] ?? "mail";
             const completed = progressMap.get(scenario.id);
+            const isAssigned = assignedIds.has(scenario.id);
 
             return (
               <Link
@@ -115,6 +125,16 @@ export default async function ScenariosPage() {
                 href={`/scenarios/${scenario.id}`}
                 className={`group relative flex flex-col rounded-lg border border-[var(--cd-surface-container-highest)] border-l-4 bg-[var(--cd-surface-container-low)] p-5 transition-all duration-200 hover:border-[var(--cd-primary)]/40 hover:shadow-lg ${difficultyBorder[scenario.difficulty]}`}
               >
+                {isAssigned && (
+                  <div className="mb-3 inline-flex items-center gap-1 self-start rounded bg-[var(--cd-tertiary)]/15 px-2 py-0.5">
+                    <span className="material-symbols-outlined text-xs text-[var(--cd-tertiary)]">
+                      assignment_ind
+                    </span>
+                    <span className="font-mono text-[10px] uppercase tracking-widest text-[var(--cd-tertiary)]">
+                      Assigned
+                    </span>
+                  </div>
+                )}
                 {/* Top row: icon + difficulty badge */}
                 <div className="mb-4 flex items-center justify-between">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--cd-surface)] text-[var(--cd-on-surface-variant)] ring-1 ring-[var(--cd-surface-container-highest)] transition-colors group-hover:text-[var(--cd-primary)] group-hover:ring-[var(--cd-primary)]/30">

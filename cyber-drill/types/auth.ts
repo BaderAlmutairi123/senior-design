@@ -22,3 +22,18 @@ export interface UserOrganization {
   role: "owner" | "admin" | "member";
   joined_at: string;
 }
+
+export interface OrganizationScenario {
+  id: string;
+  organization_id: string;
+  scenario_id: string;
+  assigned_by: string | null;
+  assigned_at: string;
+}
+
+export interface OrganizationMember {
+  user_id: string;
+  email: string;
+  role: "owner" | "admin" | "member";
+  joined_at: string;
+}

@@ -60,26 +60,29 @@ export async function getRecentActivity(
 
   if (error || !data) return [];
 
-  // Fetch scenario titles and user emails for each entry
   const scenarioIds = [...new Set(data.map((d) => d.scenario_id))];
   const userIds = [...new Set(data.map((d) => d.user_id))];
 
-  const [scenariosRes, rolesRes] = await Promise.all([
+  const [scenariosRes, emailsRes] = await Promise.all([
     supabase.from("scenarios").select("id, title").in("id", scenarioIds),
-    supabase
-      .from("user_roles")
-      .select("user_id")
-      .in("user_id", userIds),
+    supabase.rpc("get_user_emails", { uids: userIds }),
   ]);
 
   const scenarioMap = new Map(
     (scenariosRes.data ?? []).map((s) => [s.id, s.title])
   );
 
-  // We can't directly query auth.users from client — use user_id as fallback
+  const emailMap = new Map<string, string>();
+  for (const row of (emailsRes.data ?? []) as {
+    user_id: string;
+    email: string;
+  }[]) {
+    emailMap.set(row.user_id, row.email);
+  }
+
   return data.map((row) => ({
     user_id: row.user_id,
-    user_email: row.user_id.slice(0, 8) + "...",
+    user_email: emailMap.get(row.user_id) ?? row.user_id.slice(0, 8) + "...",
     scenario_title: scenarioMap.get(row.scenario_id) ?? "Unknown",
     score: row.score,
     total_questions: row.total_questions,

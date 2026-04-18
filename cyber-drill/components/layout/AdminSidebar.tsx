@@ -1,8 +1,7 @@
-import Link from "next/link";
+"use client";
 
-interface AdminSidebarProps {
-  activePath: string;
-}
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const navItems = [
   { label: "Overview", icon: "dashboard", href: "/admin" },
@@ -12,7 +11,9 @@ const navItems = [
   { label: "Feedback", icon: "rate_review", href: "/admin/feedback" },
 ];
 
-export default function AdminSidebar({ activePath }: AdminSidebarProps) {
+export default function AdminSidebar() {
+  const pathname = usePathname() ?? "/admin";
+
   return (
     <aside className="fixed left-0 top-16 w-64 h-[calc(100vh-4rem)] bg-[var(--cd-surface)] border-r border-[var(--cd-primary)]/10 flex flex-col">
       {/* Admin badge */}
@@ -38,8 +39,8 @@ export default function AdminSidebar({ activePath }: AdminSidebarProps) {
           {navItems.map((item) => {
             const isActive =
               item.href === "/admin"
-                ? activePath === "/admin"
-                : activePath.startsWith(item.href);
+                ? pathname === "/admin"
+                : pathname.startsWith(item.href);
             return (
               <li key={item.label}>
                 <Link
