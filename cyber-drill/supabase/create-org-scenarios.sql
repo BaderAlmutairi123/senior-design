@@ -92,8 +92,7 @@ BEGIN
     RETURN NULL;
   END IF;
 
-  -- Move INTO after FROM to avoid ambiguity with PostgreSQL's SELECT INTO DDL
-  SELECT id FROM auth.users WHERE email = lookup_email LIMIT 1 INTO v_found_id;
+  v_found_id := (SELECT id FROM auth.users WHERE email = lookup_email LIMIT 1);
   RETURN v_found_id;
 END;
 $$;
