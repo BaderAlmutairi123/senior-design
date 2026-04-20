@@ -40,26 +40,14 @@ CREATE POLICY "Platform admins can manage invites"
   USING (public.is_platform_admin(auth.uid()))
   WITH CHECK (public.is_platform_admin(auth.uid()));
 
--- Org owners/admins can manage their org's invite codes
+-- Org owners/admins can manage their org's invite codes.
+-- NOTE: uses public.is_org_manager() SECURITY DEFINER helper (see
+-- fix-user-organizations-recursion.sql) to avoid recursive RLS lookups.
 DROP POLICY IF EXISTS "Org owners and admins can manage invites" ON organization_invites;
 CREATE POLICY "Org owners and admins can manage invites"
   ON organization_invites FOR ALL
-  USING (
-    EXISTS (
-      SELECT 1 FROM user_organizations uo
-      WHERE uo.organization_id = organization_invites.organization_id
-        AND uo.user_id = auth.uid()
-        AND uo.role IN ('owner', 'admin')
-    )
-  )
-  WITH CHECK (
-    EXISTS (
-      SELECT 1 FROM user_organizations uo
-      WHERE uo.organization_id = organization_invites.organization_id
-        AND uo.user_id = auth.uid()
-        AND uo.role IN ('owner', 'admin')
-    )
-  );
+  USING (public.is_org_manager(auth.uid(), organization_id))
+  WITH CHECK (public.is_org_manager(auth.uid(), organization_id));
 
 -- 4. SECURITY DEFINER helper to validate and consume an invite code.
 --    Returns the organization_id if valid, NULL otherwise.
