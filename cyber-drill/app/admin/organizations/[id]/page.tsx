@@ -4,10 +4,12 @@ import {
   getOrganizationById,
   getOrganizationMembers,
   getOrganizationScenarioIds,
+  getOrgInviteCodes,
 } from "@/lib/organizations/queries";
 import { getScenarios } from "@/lib/scenarios/queries";
 import MemberManager from "./MemberManager";
 import ScenarioAssigner from "./ScenarioAssigner";
+import InviteCodeManager from "./InviteCodeManager";
 import DeleteOrgButton from "./DeleteOrgButton";
 
 export default async function OrganizationDetailPage({
@@ -17,11 +19,12 @@ export default async function OrganizationDetailPage({
 }) {
   const { id } = await params;
 
-  const [org, members, scenarios, assignedIds] = await Promise.all([
+  const [org, members, scenarios, assignedIds, inviteCodes] = await Promise.all([
     getOrganizationById(id),
     getOrganizationMembers(id),
     getScenarios(),
     getOrganizationScenarioIds(id),
+    getOrgInviteCodes(id),
   ]);
 
   if (!org) notFound();
@@ -110,6 +113,17 @@ export default async function OrganizationDetailPage({
           </div>
         ))}
       </div>
+
+      {/* Invite Codes */}
+      <section className="mb-10">
+        <h2 className="font-headline font-bold text-lg text-[var(--cd-on-surface)] mb-4">
+          Invite Codes
+        </h2>
+        <p className="text-sm text-[var(--cd-on-surface-variant)] mb-4">
+          Share invite codes with team members so they can join during signup.
+        </p>
+        <InviteCodeManager orgId={org.id} initialCodes={inviteCodes} />
+      </section>
 
       {/* Members */}
       <section className="mb-10">

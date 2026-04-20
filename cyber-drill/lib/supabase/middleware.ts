@@ -52,18 +52,36 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // Protect /admin routes — only allow users with admin role
-  if (user && request.nextUrl.pathname.startsWith("/admin")) {
+  // For authenticated users, check onboarding + admin status
+  if (
+    user &&
+    !request.nextUrl.pathname.startsWith("/login") &&
+    !request.nextUrl.pathname.startsWith("/auth")
+  ) {
     const { data: roleData } = await supabase
       .from("user_roles")
-      .select("role")
+      .select("role, onboarded")
       .eq("user_id", user.id)
       .single();
 
-    if (!roleData || roleData.role !== "admin") {
+    // Redirect un-onboarded users to /onboarding (unless already there)
+    if (
+      roleData &&
+      !roleData.onboarded &&
+      !request.nextUrl.pathname.startsWith("/onboarding")
+    ) {
       const url = request.nextUrl.clone();
-      url.pathname = "/";
+      url.pathname = "/onboarding";
       return NextResponse.redirect(url);
+    }
+
+    // Protect /admin routes — only allow users with admin role
+    if (request.nextUrl.pathname.startsWith("/admin")) {
+      if (!roleData || roleData.role !== "admin") {
+        const url = request.nextUrl.clone();
+        url.pathname = "/";
+        return NextResponse.redirect(url);
+      }
     }
   }
 

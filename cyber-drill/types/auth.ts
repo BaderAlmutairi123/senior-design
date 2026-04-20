@@ -2,6 +2,19 @@ export interface UserRole {
   id: string;
   user_id: string;
   role: "admin" | "user";
+  onboarded: boolean;
+  created_at: string;
+}
+
+export interface OrganizationInvite {
+  id: string;
+  organization_id: string;
+  code: string;
+  created_by: string | null;
+  expires_at: string | null;
+  max_uses: number;
+  uses: number;
+  is_active: boolean;
   created_at: string;
 }
 

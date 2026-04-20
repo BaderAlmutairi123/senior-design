@@ -228,3 +228,67 @@ export async function unassignScenarioFromOrg(
   revalidatePath(`/admin/organizations/${orgId}`);
   return { ok: true };
 }
+
+function generateCode(length: number = 6): string {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let code = "";
+  const arr = new Uint8Array(length);
+  crypto.getRandomValues(arr);
+  for (const byte of arr) {
+    code += chars[byte % chars.length];
+  }
+  return code;
+}
+
+export async function createInviteCode(
+  orgId: string,
+  maxUses: number = 0,
+  expiresInDays: number = 0
+): Promise<{ ok: true; code: string } | { ok: false; error: string }> {
+  let adminId: string;
+  try {
+    adminId = await requirePlatformAdmin();
+  } catch {
+    return { ok: false, error: "Forbidden" };
+  }
+
+  const supabase = await createClient();
+  const code = generateCode();
+  const expiresAt =
+    expiresInDays > 0
+      ? new Date(Date.now() + expiresInDays * 86400000).toISOString()
+      : null;
+
+  const { error } = await supabase.from("organization_invites").insert({
+    organization_id: orgId,
+    code,
+    created_by: adminId,
+    max_uses: maxUses,
+    expires_at: expiresAt,
+  });
+
+  if (error) return { ok: false, error: error.message };
+  revalidatePath(`/admin/organizations/${orgId}`);
+  return { ok: true, code };
+}
+
+export async function deactivateInviteCode(
+  inviteId: string,
+  orgId: string
+): Promise<ActionResult> {
+  try {
+    await requirePlatformAdmin();
+  } catch {
+    return { ok: false, error: "Forbidden" };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("organization_invites")
+    .update({ is_active: false })
+    .eq("id", inviteId);
+
+  if (error) return { ok: false, error: error.message };
+  revalidatePath(`/admin/organizations/${orgId}`);
+  return { ok: true };
+}

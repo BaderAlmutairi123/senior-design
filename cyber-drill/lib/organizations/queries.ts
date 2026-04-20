@@ -3,6 +3,7 @@ import type {
   Organization,
   OrganizationMember,
   OrganizationScenario,
+  OrganizationInvite,
 } from "@/types/auth";
 
 export interface OrganizationWithCounts extends Organization {
@@ -171,4 +172,17 @@ export async function getAssignedScenarioIdsForUser(
     .in("organization_id", orgIds);
 
   return new Set((assignments ?? []).map((a) => a.scenario_id));
+}
+
+export async function getOrgInviteCodes(
+  orgId: string
+): Promise<OrganizationInvite[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("organization_invites")
+    .select("*")
+    .eq("organization_id", orgId)
+    .order("created_at", { ascending: false });
+  if (error || !data) return [];
+  return data as OrganizationInvite[];
 }
