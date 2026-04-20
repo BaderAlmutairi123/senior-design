@@ -174,6 +174,33 @@ export async function getAssignedScenarioIdsForUser(
   return new Set((assignments ?? []).map((a) => a.scenario_id));
 }
 
+export async function getUserManagedOrgId(
+  userId: string
+): Promise<string | null> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("user_organizations")
+    .select("organization_id")
+    .eq("user_id", userId)
+    .in("role", ["owner", "admin"])
+    .limit(1)
+    .maybeSingle();
+
+  return data?.organization_id ?? null;
+}
+
+export async function getOrgScenarios(orgId: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("scenarios")
+    .select("*")
+    .eq("organization_id", orgId)
+    .order("created_at", { ascending: false });
+
+  if (error || !data) return [];
+  return data;
+}
+
 export async function getOrgInviteCodes(
   orgId: string
 ): Promise<OrganizationInvite[]> {

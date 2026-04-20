@@ -41,7 +41,7 @@ export default function OnboardingFlow() {
           setError(result.error);
           return;
         }
-        router.push("/admin");
+        router.push("/org");
       }
     });
   }

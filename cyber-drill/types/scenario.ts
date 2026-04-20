@@ -10,6 +10,7 @@ export interface Scenario {
   points: number;
   time_limit_seconds: number;
   is_active: boolean;
+  organization_id?: string | null;
   created_at: string;
   updated_at: string;
 }

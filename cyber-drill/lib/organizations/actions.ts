@@ -30,6 +30,29 @@ async function requirePlatformAdmin(): Promise<string> {
   return user.id;
 }
 
+async function requireOrgAuth(orgId: string): Promise<string> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  const admin = await isAdmin(user.id);
+  if (admin) return user.id;
+
+  const { data } = await supabase
+    .from("user_organizations")
+    .select("role")
+    .eq("user_id", user.id)
+    .eq("organization_id", orgId)
+    .single();
+
+  if (!data || !["owner", "admin"].includes(data.role)) {
+    throw new Error("Forbidden");
+  }
+  return user.id;
+}
+
 export async function createOrganization(formData: FormData): Promise<void> {
   const adminId = await requirePlatformAdmin();
   const name = String(formData.get("name") ?? "").trim();
@@ -40,7 +63,6 @@ export async function createOrganization(formData: FormData): Promise<void> {
   const supabase = await createClient();
   const baseSlug = slugify(name) || "org";
 
-  // Try baseSlug, then baseSlug-2, baseSlug-3... until unique
   let slug = baseSlug;
   let suffix = 1;
   for (let i = 0; i < 20; i++) {
@@ -91,7 +113,7 @@ export async function addMemberByEmail(
   role: "owner" | "admin" | "member" = "member"
 ): Promise<ActionResult> {
   try {
-    await requirePlatformAdmin();
+    await requireOrgAuth(orgId);
   } catch {
     return { ok: false, error: "Forbidden" };
   }
@@ -129,6 +151,7 @@ export async function addMemberByEmail(
   }
 
   revalidatePath(`/admin/organizations/${orgId}`);
+  revalidatePath(`/org/${orgId}`);
   return { ok: true, message: `Added ${cleanedEmail} to the organization` };
 }
 
@@ -137,7 +160,7 @@ export async function removeMember(
   userId: string
 ): Promise<ActionResult> {
   try {
-    await requirePlatformAdmin();
+    await requireOrgAuth(orgId);
   } catch {
     return { ok: false, error: "Forbidden" };
   }
@@ -151,6 +174,7 @@ export async function removeMember(
 
   if (error) return { ok: false, error: error.message };
   revalidatePath(`/admin/organizations/${orgId}`);
+  revalidatePath(`/org/${orgId}`);
   return { ok: true };
 }
 
@@ -160,7 +184,7 @@ export async function updateMemberRole(
   role: "owner" | "admin" | "member"
 ): Promise<ActionResult> {
   try {
-    await requirePlatformAdmin();
+    await requireOrgAuth(orgId);
   } catch {
     return { ok: false, error: "Forbidden" };
   }
@@ -174,6 +198,7 @@ export async function updateMemberRole(
 
   if (error) return { ok: false, error: error.message };
   revalidatePath(`/admin/organizations/${orgId}`);
+  revalidatePath(`/org/${orgId}`);
   return { ok: true };
 }
 
@@ -181,9 +206,9 @@ export async function assignScenarioToOrg(
   orgId: string,
   scenarioId: string
 ): Promise<ActionResult> {
-  let adminId: string;
+  let userId: string;
   try {
-    adminId = await requirePlatformAdmin();
+    userId = await requireOrgAuth(orgId);
   } catch {
     return { ok: false, error: "Forbidden" };
   }
@@ -194,7 +219,7 @@ export async function assignScenarioToOrg(
     .insert({
       organization_id: orgId,
       scenario_id: scenarioId,
-      assigned_by: adminId,
+      assigned_by: userId,
     });
 
   if (error) {
@@ -204,6 +229,7 @@ export async function assignScenarioToOrg(
     return { ok: false, error: error.message };
   }
   revalidatePath(`/admin/organizations/${orgId}`);
+  revalidatePath(`/org/${orgId}`);
   return { ok: true };
 }
 
@@ -212,7 +238,7 @@ export async function unassignScenarioFromOrg(
   scenarioId: string
 ): Promise<ActionResult> {
   try {
-    await requirePlatformAdmin();
+    await requireOrgAuth(orgId);
   } catch {
     return { ok: false, error: "Forbidden" };
   }
@@ -226,6 +252,7 @@ export async function unassignScenarioFromOrg(
 
   if (error) return { ok: false, error: error.message };
   revalidatePath(`/admin/organizations/${orgId}`);
+  revalidatePath(`/org/${orgId}`);
   return { ok: true };
 }
 
@@ -245,9 +272,9 @@ export async function createInviteCode(
   maxUses: number = 0,
   expiresInDays: number = 0
 ): Promise<{ ok: true; code: string } | { ok: false; error: string }> {
-  let adminId: string;
+  let userId: string;
   try {
-    adminId = await requirePlatformAdmin();
+    userId = await requireOrgAuth(orgId);
   } catch {
     return { ok: false, error: "Forbidden" };
   }
@@ -262,13 +289,14 @@ export async function createInviteCode(
   const { error } = await supabase.from("organization_invites").insert({
     organization_id: orgId,
     code,
-    created_by: adminId,
+    created_by: userId,
     max_uses: maxUses,
     expires_at: expiresAt,
   });
 
   if (error) return { ok: false, error: error.message };
   revalidatePath(`/admin/organizations/${orgId}`);
+  revalidatePath(`/org/${orgId}`);
   return { ok: true, code };
 }
 
@@ -277,7 +305,7 @@ export async function deactivateInviteCode(
   orgId: string
 ): Promise<ActionResult> {
   try {
-    await requirePlatformAdmin();
+    await requireOrgAuth(orgId);
   } catch {
     return { ok: false, error: "Forbidden" };
   }
@@ -290,5 +318,6 @@ export async function deactivateInviteCode(
 
   if (error) return { ok: false, error: error.message };
   revalidatePath(`/admin/organizations/${orgId}`);
+  revalidatePath(`/org/${orgId}`);
   return { ok: true };
 }

@@ -4,7 +4,7 @@
 -- During signup onboarding a user needs to:
 --   - standalone: mark themselves onboarded
 --   - member:     redeem invite + add themselves to org + mark onboarded
---   - admin:      upgrade their own role to admin + create an org + own it
+--   - org admin:  create an org + become its owner (stays role='user')
 --
 -- Plain UPDATE/INSERT statements against user_roles / organizations /
 -- user_organizations get filtered out by RLS (no "user can upgrade
@@ -87,7 +87,10 @@ $$;
 REVOKE ALL ON FUNCTION public.onboard_as_org_member(TEXT) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION public.onboard_as_org_member(TEXT) TO authenticated;
 
--- 3. Admin onboarding: upgrade role + create org + become owner
+-- 3. Org admin onboarding: create org + become its owner.
+--    The user stays role='user' in user_roles — they are NOT a platform
+--    admin.  Their admin powers come from being the org owner in
+--    user_organizations.
 CREATE OR REPLACE FUNCTION public.onboard_as_admin(org_name TEXT)
 RETURNS UUID
 LANGUAGE plpgsql
@@ -112,16 +115,15 @@ BEGIN
     RAISE EXCEPTION 'Organization name is required';
   END IF;
 
-  -- Block re-onboarding so users can't repeatedly claim admin.
   SELECT onboarded INTO v_already_onboarded
     FROM public.user_roles WHERE user_id = v_uid;
   IF v_already_onboarded THEN
     RAISE EXCEPTION 'Already onboarded';
   END IF;
 
-  -- Upgrade role
+  -- Mark onboarded only — do NOT set role='admin'
   UPDATE public.user_roles
-    SET role = 'admin', onboarded = true
+    SET onboarded = true
     WHERE user_id = v_uid;
 
   -- Build unique slug
