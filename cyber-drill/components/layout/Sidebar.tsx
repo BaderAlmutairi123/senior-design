@@ -64,13 +64,22 @@ export default function Sidebar({ activePath, isAdmin = false, orgId }: SidebarP
       {/* Bottom actions */}
       <div className="p-4 space-y-2">
         {orgId && (
-          <Link
-            href={`/org/${orgId}`}
-            className="flex items-center justify-center gap-2 w-full py-3 bg-[var(--cd-tertiary)]/10 text-[var(--cd-tertiary)] font-headline uppercase tracking-widest text-xs rounded hover:bg-[var(--cd-tertiary)]/20 transition-colors"
-          >
-            <span className="material-symbols-outlined text-sm">corporate_fare</span>
-            My Organization
-          </Link>
+          <>
+            <Link
+              href={`/org/${orgId}`}
+              className="flex items-center justify-center gap-2 w-full py-3 bg-[var(--cd-tertiary)]/10 text-[var(--cd-tertiary)] font-headline uppercase tracking-widest text-xs rounded hover:bg-[var(--cd-tertiary)]/20 transition-colors"
+            >
+              <span className="material-symbols-outlined text-sm">corporate_fare</span>
+              My Organization
+            </Link>
+            <Link
+              href={`/org/${orgId}/phishing`}
+              className="flex items-center justify-center gap-2 w-full py-3 bg-[var(--cd-primary)]/10 text-[var(--cd-primary)] font-headline uppercase tracking-widest text-xs rounded hover:bg-[var(--cd-primary)]/20 transition-colors"
+            >
+              <span className="material-symbols-outlined text-sm">phishing</span>
+              Phishing Sims
+            </Link>
+          </>
         )}
         {isAdmin && (
           <Link
