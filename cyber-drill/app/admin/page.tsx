@@ -116,7 +116,7 @@ export default async function AdminDashboard() {
                     </p>
                     <p className="text-xs text-[var(--cd-on-surface-variant)]">
                       User {entry.user_email} &mdash;{" "}
-                      {new Date(entry.completed_at).toLocaleDateString(
+                      {new Date(entry.completed_at).toLocaleString(
                         "en-US",
                         { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }
                       )}

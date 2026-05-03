@@ -36,15 +36,21 @@ export default function MemberManager({ orgId, initialMembers }: Props) {
       if (result.ok) {
         setMessage({ kind: "ok", text: result.message ?? "Member added" });
         setEmail("");
-        setMembers((prev) => [
-          ...prev,
-          {
-            user_id: "pending",
-            email: email.trim().toLowerCase(),
-            role,
-            joined_at: new Date().toISOString(),
-          },
-        ]);
+        // Use email as optimistic key — replaced on next server render
+        const optimisticEmail = email.trim().toLowerCase();
+        setMembers((prev) =>
+          prev.some((m) => m.email === optimisticEmail)
+            ? prev
+            : [
+                ...prev,
+                {
+                  user_id: `optimistic:${optimisticEmail}`,
+                  email: optimisticEmail,
+                  role,
+                  joined_at: new Date().toISOString(),
+                },
+              ]
+        );
       } else {
         setMessage({ kind: "error", text: result.error });
       }
@@ -150,14 +156,14 @@ export default function MemberManager({ orgId, initialMembers }: Props) {
 
                 <select
                   value={m.role}
-                  disabled={m.user_id === "pending" || isPending}
+                  disabled={m.user_id.startsWith("optimistic:") || isPending}
                   onChange={(e) =>
                     handleRoleChange(
                       m.user_id,
                       e.target.value as OrganizationMember["role"]
                     )
                   }
-                  className={`rounded px-2 py-1 text-[10px] font-mono uppercase tracking-widest border ${roleStyles[m.role]} border-transparent focus:outline-none`}
+                  className={`rounded px-2 py-1 text-[10px] font-mono uppercase tracking-widest border ${roleStyles[m.role]} border-transparent focus:outline-none focus:ring-2 focus:ring-[var(--cd-tertiary)] focus:ring-offset-1 focus:ring-offset-[var(--cd-surface-container-low)]`}
                 >
                   <option value="member">Member</option>
                   <option value="admin">Admin</option>
@@ -167,7 +173,7 @@ export default function MemberManager({ orgId, initialMembers }: Props) {
                 <button
                   type="button"
                   onClick={() => handleRemove(m.user_id)}
-                  disabled={m.user_id === "pending" || isPending}
+                  disabled={m.user_id.startsWith("optimistic:") || isPending}
                   className="flex h-8 w-8 items-center justify-center rounded-md text-[var(--cd-on-surface-variant)] hover:bg-[#ff716c]/10 hover:text-[#ff716c] transition-colors disabled:opacity-50"
                   aria-label="Remove member"
                 >

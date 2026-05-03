@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { toggleScenarioActive, deleteScenario } from "@/lib/admin/scenario-actions";
 
 export default function ScenarioListActions({
@@ -11,22 +11,31 @@ export default function ScenarioListActions({
   isActive: boolean;
 }) {
   const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
 
   function handleToggle() {
+    setError(null);
     startTransition(async () => {
-      await toggleScenarioActive(scenarioId, !isActive);
+      const result = await toggleScenarioActive(scenarioId, !isActive);
+      if (!result.ok) setError(result.error ?? "Failed to update");
     });
   }
 
   function handleDelete() {
     if (!confirm("Delete this scenario? This cannot be undone.")) return;
+    setError(null);
     startTransition(async () => {
-      await deleteScenario(scenarioId);
+      const result = await deleteScenario(scenarioId);
+      if (!result.ok) setError(result.error ?? "Failed to delete");
     });
   }
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex flex-col items-end gap-1">
+      {error && (
+        <p className="text-[10px] text-red-400 max-w-[160px] text-right">{error}</p>
+      )}
+      <div className="flex items-center gap-1">
       <button
         type="button"
         onClick={handleToggle}
@@ -47,6 +56,7 @@ export default function ScenarioListActions({
       >
         <span className="material-symbols-outlined text-[18px]">delete</span>
       </button>
+      </div>
     </div>
   );
 }
