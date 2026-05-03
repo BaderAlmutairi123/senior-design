@@ -46,10 +46,9 @@ export default async function CampaignReportPage({
   const templateLabel =
     TEMPLATE_LABELS[campaign.template_key as TemplateKey] ?? campaign.template_key;
 
-  const eventsByRecipient = new Map<string, { open?: string; click?: string }>();
+  const eventsByRecipient = new Map<string, { click?: string }>();
   for (const e of events) {
     const existing = eventsByRecipient.get(e.recipient_id) ?? {};
-    if (e.event_type === "open" && !existing.open) existing.open = e.occurred_at;
     if (e.event_type === "click" && !existing.click) existing.click = e.occurred_at;
     eventsByRecipient.set(e.recipient_id, existing);
   }
@@ -96,11 +95,10 @@ export default async function CampaignReportPage({
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         {[
           { label: "Recipients", value: stats.total, color: "#8ff5ff", icon: "group" },
           { label: "Sent", value: stats.sent, color: "#a2f31f", icon: "mark_email_read" },
-          { label: "Opened", value: `${stats.opened} (${stats.openRate}%)`, color: "#d873ff", icon: "visibility" },
           { label: "Clicked", value: `${stats.clicked} (${stats.clickRate}%)`, color: "#ff6b6b", icon: "ads_click" },
         ].map((s) => (
           <div
@@ -122,11 +120,6 @@ export default async function CampaignReportPage({
         ))}
       </div>
 
-      {/* Open tracking note */}
-      <p className="text-xs text-[var(--cd-on-surface-variant)] mb-6">
-        * Email clients may pre-fetch images — open counts are best-effort indicators.
-      </p>
-
       {/* Per-recipient table */}
       <section>
         <h2 className="font-headline font-bold text-lg text-[var(--cd-on-surface)] mb-4">
@@ -141,9 +134,6 @@ export default async function CampaignReportPage({
                 </th>
                 <th className="px-4 py-3 text-left text-[10px] font-mono uppercase tracking-widest text-[var(--cd-on-surface-variant)]">
                   Status
-                </th>
-                <th className="px-4 py-3 text-left text-[10px] font-mono uppercase tracking-widest text-[var(--cd-on-surface-variant)]">
-                  Opened
                 </th>
                 <th className="px-4 py-3 text-left text-[10px] font-mono uppercase tracking-widest text-[var(--cd-on-surface-variant)]">
                   Clicked
@@ -170,15 +160,6 @@ export default async function CampaignReportPage({
                       </span>
                       {r.error && (
                         <span className="ml-2 text-[10px] text-red-400/70">{r.error}</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 text-xs text-[var(--cd-on-surface-variant)]">
-                      {ev.open ? (
-                        <span className="text-[#d873ff]">
-                          {new Date(ev.open).toLocaleString()}
-                        </span>
-                      ) : (
-                        "—"
                       )}
                     </td>
                     <td className="px-4 py-3 text-xs text-[var(--cd-on-surface-variant)]">
