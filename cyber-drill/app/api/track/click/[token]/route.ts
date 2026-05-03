@@ -42,7 +42,7 @@ export async function GET(
   if (recipient) {
     const forwarded = req.headers.get("x-forwarded-for") ?? "";
     const ip = forwarded.split(",")[0].trim() || null;
-    admin.from("phishing_events").insert({
+    await admin.from("phishing_events").insert({
       recipient_id: recipient.id,
       event_type: "click",
       url: targetUrl,
