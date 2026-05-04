@@ -1,26 +1,140 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Dark mode (default) */
+:root, .dark {
+  --cd-primary: #8ff5ff;
+  --cd-primary-dim: #00deec;
+  --cd-secondary: #a2f31f;
+  --cd-tertiary: #d873ff;
+  --cd-error: #ff716c;
+  --cd-surface: #0c0e12;
+  --cd-surface-container: #171a1f;
+  --cd-surface-container-low: #111318;
+  --cd-surface-container-high: #1d2025;
+  --cd-surface-container-highest: #23262c;
+  --cd-surface-container-lowest: #000000;
+  --cd-on-surface: #f6f6fc;
+  --cd-on-surface-variant: #aaabb0;
+  --cd-outline: #74757a;
+  --cd-outline-variant: #46484d;
+}
+
+/* Light mode */
+.light {
+  --cd-primary: #006d75;
+  --cd-primary-dim: #004f56;
+  --cd-secondary: #3a6b00;
+  --cd-tertiary: #8a2fc6;
+  --cd-error: #d93025;
+  --cd-surface: #f8f9fc;
+  --cd-surface-container: #eef0f4;
+  --cd-surface-container-low: #f2f4f8;
+  --cd-surface-container-high: #e6e8ec;
+  --cd-surface-container-highest: #dddfe3;
+  --cd-surface-container-lowest: #ffffff;
+  --cd-on-surface: #1a1c20;
+  --cd-on-surface-variant: #44474d;
+  --cd-outline: #74777e;
+  --cd-outline-variant: #c4c6cd;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-background: var(--cd-surface);
+  --color-foreground: var(--cd-on-surface);
+  --font-sans: 'Inter', sans-serif;
+  --font-headline: 'Space Grotesk', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--cd-surface);
+  color: var(--cd-on-surface);
+  font-family: 'Inter', sans-serif;
+}
+
+.font-headline { font-family: 'Space Grotesk', sans-serif; }
+
+/* CyberDrill Design System */
+
+/* Scanline overlay effect */
+.scanline {
+  background: linear-gradient(to bottom, transparent 50%, rgba(143, 245, 255, 0.03) 50%);
+  background-size: 100% 4px;
+  pointer-events: none;
+}
+
+/* Chamfer clip paths */
+.chamfer-sm {
+  clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+}
+.chamfer-top-right {
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+}
+.hex-clip {
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+}
+
+/* Glass panel */
+.glass-panel {
+  background: rgba(35, 38, 44, 0.6);
+  backdrop-filter: blur(12px);
+}
+
+/* Cyber grid background */
+.cyber-grid {
+  background-image:
+    radial-gradient(circle, rgba(143, 245, 255, 0.03) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Glow effects */
+.glow-primary { filter: drop-shadow(0 0 8px rgba(143, 245, 255, 0.4)); }
+.glow-secondary { filter: drop-shadow(0 0 8px rgba(162, 243, 31, 0.4)); }
+.glow-tertiary { filter: drop-shadow(0 0 8px rgba(216, 115, 255, 0.4)); }
+
+/* Card hover glow */
+.card-glow {
+  transition: all 0.3s ease;
+}
+.card-glow:hover {
+  box-shadow: 0 0 20px rgba(143, 245, 255, 0.1), 0 0 40px rgba(143, 245, 255, 0.05);
+  border-color: rgba(143, 245, 255, 0.3);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #8ff5ff, #a2f31f);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Pulse animation */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Material Symbols */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: #0c0e12; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #1d2025; }
+
+/* Segmented progress bar */
+.progress-segmented {
+  display: flex;
+  gap: 2px;
+}
+.progress-segmented > div {
+  height: 6px;
+  flex: 1;
 }

@@ -44,6 +44,42 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
+## Phishing Simulation
+
+Org owners and admins can run simulated phishing campaigns to test member awareness.
+
+### Setup
+
+Add the following to `.env.local` (see `.env.example`):
+
+```
+RESEND_API_KEY=re_...
+PHISHING_FROM_EMAIL=onboarding@resend.dev
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+Run the migration in your Supabase dashboard:
+```
+supabase/add-phishing-campaigns.sql
+```
+
+### Sending emails
+
+- **Dev / demo**: Use `PHISHING_FROM_EMAIL=onboarding@resend.dev` (Resend sandbox). Emails can only be delivered to the Resend account owner's address.
+- **Production**: Verify your domain in Resend and set `PHISHING_FROM_EMAIL` to an address on that domain.
+
+### Click-redirect allowlist
+
+By default only links to `NEXT_PUBLIC_APP_URL` are allowed as click-tracking redirect targets. To allow additional hosts, set:
+```
+ALLOWED_REDIRECT_HOSTS=yourdomain.com,another.com
+```
+
+### Usage
+
+Navigate to **My Organization → Phishing Sims**, create a campaign, choose a template and recipients, then click **Send Campaign** on the report page.
+
 ## Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
