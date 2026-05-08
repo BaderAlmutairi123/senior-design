@@ -50,8 +50,11 @@ export async function addRecipientsFromOrg(
 
   if (members.length === 0) return { ok: false, error: "Select at least one recipient" };
 
+  const validMembers = members.filter((m) => m.email && m.email.includes("@"));
+  if (validMembers.length === 0) return { ok: false, error: "No members with valid email addresses" };
+
   const admin = createAdminClient();
-  const rows = members.map((m) => ({
+  const rows = validMembers.map((m) => ({
     campaign_id: campaignId,
     recipient_user_id: m.user_id,
     recipient_email: m.email,
