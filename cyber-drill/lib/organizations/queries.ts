@@ -97,7 +97,7 @@ export async function getOrganizationMembers(
 
   return data.map((row) => ({
     user_id: row.user_id,
-    email: emailMap.get(row.user_id) ?? row.user_id.slice(0, 8) + "...",
+    email: emailMap.get(row.user_id) ?? "",
     role: row.role as OrganizationMember["role"],
     joined_at: row.joined_at,
   }));
